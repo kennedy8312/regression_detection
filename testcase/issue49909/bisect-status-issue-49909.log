@@ -1,0 +1,35 @@
+
+Commit 426671e91adc7bfafe9918bd28e88d374f77d68f : Success
+Commit 87c64bf7c3a6a22949c61ce3a988009de5ea20e7 : Success
+Commit e528195120b21bbe6947b0fbe31e6f2a24f24c23 : Success
+Commit 626e3a55224190c9931dfc2b7bc2d6a736337218 : Failure
+Commit b40cb427f265890858763bb450e5d98e8b822c1e : Failure
+Commit 29dffb7591f5ef225d458d2248a64dcc13e4fd7f : Failure
+Commit 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0 : Failure
+Commit bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025 : Success
+Commit 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878 : Success
+Commit aedbcd085bb4ea5777699eac7d25dfd42222b8e5 : Failure
+# bad: [9fd5f4a8e4f273a60fbe7d3848f85a1be8f0600b] lightning: fix "context cancel" overwrites the real error (#44734) (#45000)
+# good: [635a4362235e8a3c0043542e629532e3c7bb2756] ddl: fix ingest checkpoint not resumed for empty partitions (#44271) (#44282)
+git bisect start 'v7.2.0' 'v7.1.0'
+# good: [426671e91adc7bfafe9918bd28e88d374f77d68f] planner, sessionctx: enable late materialization in disaggregated TiFlash (#43068)
+git bisect good 426671e91adc7bfafe9918bd28e88d374f77d68f
+# good: [87c64bf7c3a6a22949c61ce3a988009de5ea20e7] br : a new flag to enable ebs br cross az restore (#43962)
+git bisect good 87c64bf7c3a6a22949c61ce3a988009de5ea20e7
+# good: [e528195120b21bbe6947b0fbe31e6f2a24f24c23] table/tables: get temp index value from storage regardless of lazy check (#44452)
+git bisect good e528195120b21bbe6947b0fbe31e6f2a24f24c23
+# bad: [626e3a55224190c9931dfc2b7bc2d6a736337218] linter: enable revive for part planner/core (#44662)
+git bisect bad 626e3a55224190c9931dfc2b7bc2d6a736337218
+# bad: [b40cb427f265890858763bb450e5d98e8b822c1e] extension: update submodule (#44580)
+git bisect bad b40cb427f265890858763bb450e5d98e8b822c1e
+# bad: [29dffb7591f5ef225d458d2248a64dcc13e4fd7f] disttask: Refine dispatcher (#44482)
+git bisect bad 29dffb7591f5ef225d458d2248a64dcc13e4fd7f
+# bad: [6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0] lightning: add error message for pre-deduplication (#44317)
+git bisect bad 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0
+# good: [bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025] lightning: deprecate send-kv-pairs (#44463)
+git bisect good bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025
+# good: [8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878] *: support check constraint in tidb (#44104)
+git bisect good 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878
+# bad: [aedbcd085bb4ea5777699eac7d25dfd42222b8e5] expression: refactor grouping function computation and update related tipb (#44436)
+git bisect bad aedbcd085bb4ea5777699eac7d25dfd42222b8e5
+# first bad commit: [aedbcd085bb4ea5777699eac7d25dfd42222b8e5] expression: refactor grouping function computation and update related tipb (#44436)

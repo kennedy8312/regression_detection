@@ -1,0 +1,38 @@
+
+Commit 6701bf1527c7386a82396a1ecfb5322872daa2b3 : Success
+Commit c1b70d56de9bf063a8e8c42505cfdfd8699c1e33 : Success
+Commit 47a990e7f78de8639af27afe3abbfd734e40ebf3 : Success
+Commit 2fffb7fb29b4b2f22f1c669c0b56e663a143dc72 : Failure
+Commit e4dc2c9b49ec5fd0090e19ede04b9718c8bb0fd0 : Success
+Commit 24e8333ef5f5a238ae1644c42bc793cf870f748f : Failure
+Commit 26e4988398cf0a78136fbb9bfcbe00338cac4e5a : Success
+Commit 70562090bc418972e01fe673790b7a0e407b03bb : Failure
+Commit 3f915c0a369a824c8b1adb37d8a877c1066ea6df : Success
+Commit 5a2b8e8e1a4b4bda515eeed6cee9349bb44c2bbb : Failure
+Commit af76c2ff1e7cfadbccb74a3a0ffd761cfecbffef : Failure
+# bad: [dfb7955cd9b08607896531e4575ab9c9f6bd2d75] Revert "server: register all status routes with mux.Router" (#52230)
+# good: [52794d985ba6325d75a714d4eaa0838d59425eb6] executor: use analyze scan concurrency to control index analyze (#50639) (#50642)
+git bisect start 'master' 'v7.6.0'
+# good: [6701bf1527c7386a82396a1ecfb5322872daa2b3] ddl: create table accelerate (#49687)
+git bisect good 6701bf1527c7386a82396a1ecfb5322872daa2b3
+# good: [c1b70d56de9bf063a8e8c42505cfdfd8699c1e33] planner: add more test cases for plan cache with generated columns (#51323)
+git bisect good c1b70d56de9bf063a8e8c42505cfdfd8699c1e33
+# good: [47a990e7f78de8639af27afe3abbfd734e40ebf3] planner: adjust estimated rows to account for modified rows (#50970)
+git bisect good 47a990e7f78de8639af27afe3abbfd734e40ebf3
+# bad: [2fffb7fb29b4b2f22f1c669c0b56e663a143dc72] ddl: fix adding multi-value index (#51884)
+git bisect bad 2fffb7fb29b4b2f22f1c669c0b56e663a143dc72
+# good: [e4dc2c9b49ec5fd0090e19ede04b9718c8bb0fd0] build(deps): bump golang.org/x/oauth2 from 0.17.0 to 0.18.0 (#51804)
+git bisect good e4dc2c9b49ec5fd0090e19ede04b9718c8bb0fd0
+# bad: [24e8333ef5f5a238ae1644c42bc793cf870f748f] executor: adjust the order of initialize plan, kvExecCounter and TopSQL (#51816)
+git bisect bad 24e8333ef5f5a238ae1644c42bc793cf870f748f
+# good: [26e4988398cf0a78136fbb9bfcbe00338cac4e5a] txn: check unsupported table types for Pipelined DML (#51839)
+git bisect good 26e4988398cf0a78136fbb9bfcbe00338cac4e5a
+# bad: [70562090bc418972e01fe673790b7a0e407b03bb] executor: fix issue that some query execution stats was omitted when execution was interrupted (#51787)
+git bisect bad 70562090bc418972e01fe673790b7a0e407b03bb
+# good: [3f915c0a369a824c8b1adb37d8a877c1066ea6df] execdetails: add statistical data of table scanning of TiFlash (#51726)
+git bisect good 3f915c0a369a824c8b1adb37d8a877c1066ea6df
+# bad: [5a2b8e8e1a4b4bda515eeed6cee9349bb44c2bbb] importinto: pass kv store directly when rebase ids (#51850)
+git bisect bad 5a2b8e8e1a4b4bda515eeed6cee9349bb44c2bbb
+# bad: [af76c2ff1e7cfadbccb74a3a0ffd761cfecbffef] planner: support OR list nested in AND list for mv index (#51716)
+git bisect bad af76c2ff1e7cfadbccb74a3a0ffd761cfecbffef
+# first bad commit: [af76c2ff1e7cfadbccb74a3a0ffd761cfecbffef] planner: support OR list nested in AND list for mv index (#51716)

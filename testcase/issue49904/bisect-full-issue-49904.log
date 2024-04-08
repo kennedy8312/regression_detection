@@ -1,0 +1,514 @@
+
+Bisecting: 80 revisions left to test after this (roughly 6 steps)
+[824f43408fdfd168bdd7cea39d472d6b64dd13ca] statistics: add a more accurate upper bound to exponential backoff estimation strategy (#32848)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-80-g824f43408f-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:02:06" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=824f43408fdfd168bdd7cea39d472d6b64dd13ca" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+go: downloading github.com/tikv/client-go/v2 v2.0.1-0.20220309055239-7e34d88af3b5
+go: downloading github.com/pingcap/kvproto v0.0.0-20220304032058-ccd676426a27
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 824f43408fdfd168bdd7cea39d472d6b64dd13ca-----------------
+Server on 824f43408fdfd168bdd7cea39d472d6b64dd13ca started.
+Validation passed. 824f43408fdfd168bdd7cea39d472d6b64dd13ca is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+1
+1
+1
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-80-g824f43408f-dirty
+Edition: Community
+Git Commit Hash: 824f43408fdfd168bdd7cea39d472d6b64dd13ca
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:02:06
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on 824f43408fdfd168bdd7cea39d472d6b64dd13ca-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 40 revisions left to test after this (roughly 5 steps)
+[c4fbc8e4afa9493789109247e609912e53b7db3e] ddl: migrate test-infra to testify for ddl.testDBSuite5 (#33157)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-120-gc4fbc8e4af-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:02:42" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=c4fbc8e4afa9493789109247e609912e53b7db3e" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+go: downloading golang.org/x/tools v0.1.9
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on c4fbc8e4afa9493789109247e609912e53b7db3e-----------------
+Server on c4fbc8e4afa9493789109247e609912e53b7db3e started.
+Validation passed. c4fbc8e4afa9493789109247e609912e53b7db3e is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+1
+1
+1
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-120-gc4fbc8e4af-dirty
+Edition: Community
+Git Commit Hash: c4fbc8e4afa9493789109247e609912e53b7db3e
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:02:42
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on c4fbc8e4afa9493789109247e609912e53b7db3e-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 20 revisions left to test after this (roughly 4 steps)
+[0e0243c1e03289bb85838dd25933bfb8a8f13134] main: fix `@@hostname` always returns `localhost` (#33064)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-140-g0e0243c1e0-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:03:18" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=0e0243c1e03289bb85838dd25933bfb8a8f13134" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 0e0243c1e03289bb85838dd25933bfb8a8f13134-----------------
+Server on 0e0243c1e03289bb85838dd25933bfb8a8f13134 started.
+Validation failed at run 1. 0e0243c1e03289bb85838dd25933bfb8a8f13134 is a bad label.
+Expected: 
+1
+1
+1
+1
+Actual: 
+
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-140-g0e0243c1e0-dirty
+Edition: Community
+Git Commit Hash: 0e0243c1e03289bb85838dd25933bfb8a8f13134
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:03:18
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on 0e0243c1e03289bb85838dd25933bfb8a8f13134-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 9 revisions left to test after this (roughly 3 steps)
+[4cb1b94cc7525017996770ddb6a6b25e25c26344] bootstrap: correctly increment the bootstrap version (#33184)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-130-g4cb1b94cc7-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:03:58" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=4cb1b94cc7525017996770ddb6a6b25e25c26344" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 4cb1b94cc7525017996770ddb6a6b25e25c26344-----------------
+Server on 4cb1b94cc7525017996770ddb6a6b25e25c26344 started.
+Validation failed at run 1. 4cb1b94cc7525017996770ddb6a6b25e25c26344 is a bad label.
+Expected: 
+1
+1
+1
+1
+Actual: 
+
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-130-g4cb1b94cc7-dirty
+Edition: Community
+Git Commit Hash: 4cb1b94cc7525017996770ddb6a6b25e25c26344
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:03:58
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on 4cb1b94cc7525017996770ddb6a6b25e25c26344-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 4 revisions left to test after this (roughly 2 steps)
+[95a346cb2deb803988f18efe141db6e90e704329] sysvar: re-organize the order of sysvars by their scopes. (#33149)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-125-g95a346cb2d-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:04:31" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=95a346cb2deb803988f18efe141db6e90e704329" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 95a346cb2deb803988f18efe141db6e90e704329-----------------
+Server on 95a346cb2deb803988f18efe141db6e90e704329 started.
+Validation failed at run 1. 95a346cb2deb803988f18efe141db6e90e704329 is a bad label.
+Expected: 
+1
+1
+1
+1
+Actual: 
+
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-125-g95a346cb2d-dirty
+Edition: Community
+Git Commit Hash: 95a346cb2deb803988f18efe141db6e90e704329
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:04:31
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on 95a346cb2deb803988f18efe141db6e90e704329-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 2 revisions left to test after this (roughly 1 step)
+[46c43febcac0e24bc9f0872e93cf6125db69d93d] parser: add RemovePlacementRuleFlag (#33161)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-122-g46c43febca-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:04:50" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=46c43febcac0e24bc9f0872e93cf6125db69d93d" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 46c43febcac0e24bc9f0872e93cf6125db69d93d-----------------
+Server on 46c43febcac0e24bc9f0872e93cf6125db69d93d started.
+Validation passed. 46c43febcac0e24bc9f0872e93cf6125db69d93d is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+1
+1
+1
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-122-g46c43febca-dirty
+Edition: Community
+Git Commit Hash: 46c43febcac0e24bc9f0872e93cf6125db69d93d
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:04:50
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on 46c43febcac0e24bc9f0872e93cf6125db69d93d-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[f12ad1e6ca7169f87ba1ae382ddfdf599edb3973] executor: fix CTE may be blocked when query report error (#33085)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-124-gf12ad1e6ca-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:05:14" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=f12ad1e6ca7169f87ba1ae382ddfdf599edb3973" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on f12ad1e6ca7169f87ba1ae382ddfdf599edb3973-----------------
+Server on f12ad1e6ca7169f87ba1ae382ddfdf599edb3973 started.
+Validation failed at run 1. f12ad1e6ca7169f87ba1ae382ddfdf599edb3973 is a bad label.
+Expected: 
+1
+1
+1
+1
+Actual: 
+
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-124-gf12ad1e6ca-dirty
+Edition: Community
+Git Commit Hash: f12ad1e6ca7169f87ba1ae382ddfdf599edb3973
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:05:14
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on f12ad1e6ca7169f87ba1ae382ddfdf599edb3973-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[47e4b5bf312aa9219f2589145c4e145590e0785f] *: revert #27021 to fix a bug that selection can not be pushed down when having clause above aggregation (#33168)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49904/issue49904.result' '/Users/yichenhan/workload/regression_detection/issue49904' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49904/bisect-status-issue-49904.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.0.0-alpha-123-g47e4b5bf31-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-22 03:05:32" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=47e4b5bf312aa9219f2589145c4e145590e0785f" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server tidb-server/main.go
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 47e4b5bf312aa9219f2589145c4e145590e0785f-----------------
+Server on 47e4b5bf312aa9219f2589145c4e145590e0785f started.
+Validation failed at run 1. 47e4b5bf312aa9219f2589145c4e145590e0785f is a bad label.
+Expected: 
+1
+1
+1
+1
+Actual: 
+
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49904_testcase.sql
+issue49904_testcase.sql: 
+drop table if exists `tb416b66c`;
+
+CREATE TABLE `tb416b66c` (
+  `col_56` bigint(20) NOT NULL,
+  `col_57` char(63) COLLATE utf8_unicode_ci NOT NULL,
+  `col_58` text COLLATE utf8_unicode_ci NOT NULL,
+  `col_59` text CHARACTER SET gbk COLLATE gbk_bin NOT NULL,
+  `col_60` tinyint(1) NOT NULL,
+  `col_61` decimal(22,12) DEFAULT '3329.3099'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `tb416b66c` VALUES (-9223372036854775807,'VR1_LBJG&qu','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,60925.925000000000), (-9223372036854775807,'58yh+m=qwqM5J^r#t9','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,1.705000000000), (-9223372036854775807,'=qV@CF6p3hcx3Lb+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,598765.000000000000), (-9223372036854775807,'udR+LP66m!9Z','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,69.690000000000), (-9223372036854775807,'tkNK)BM','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.808200000000), (-9223372036854775807,'yE_A','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,8.264000000000), (-9223372036854775807,'*nBn$','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,880.400000000000), (-9223372036854775807,'2Cg)^bX','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',1,1.893600000000), (-9223372036854775807,'*__mwqYGIYa-3+z@P4','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,707.480000000000), (-9223372036854775807,'v6dqU7L53Lb^Eyflp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2067.300000000000), (-9223372036854775807,'10(D','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,4927.566300000000), (-9223372036854775807,'YSA7kfi!_S%82','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.279000000000), (-9223372036854775807,'zz0hZet&DXsQ!DCFer','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.900000000000), (-9223372036854775807,'daqy0^G)25XB7irch$T','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,188742.680000000000), (-9223372036854775807,'7Ab)Ly','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3225.100000000000), (-9223372036854775807,'2','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,222915.000000000000), (-9223372036854775807,'1xPV^sZ1pl)$Y!Xn6','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,158598.900000000000), (-9223372036854775807,'7wm6*zxQyh3@5VZow','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.630000000000), (-9223372036854775807,'BI+','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,3340.724000000000), (-9223372036854775807,'0weNj~d','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,NULL), (-9223372036854775807,'LOyp','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,8.000000000000), (99538178542115065,'3ZSCB4mTZZrmLHL',')g','M舤$Hyk@PS',0,6215.465900000000), (1775667144032088600,'4G=*CwoxQ8hID&51G','_Jy--p9uOnDI9Bf2Un','=狷伧互P)藂0#8妦5bS',1,333492.600000000000), (-9223372036854775807,'_15pF','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,0.700000000000), (1775667144032088600,'XFWJua7Bv#Oe%n9g@','_Jy--p9uOnDI9Bf2Un','7块枫n窘@',1,536.402000000000), (-9223372036854775807,'c5eQ4b(8x0t~fCo)iC','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2792.000000000000), (1775667144032088600,'','_Jy--p9uOnDI9Bf2Un','D毜z@',0,26.210000000000), (-9223372036854775807,'seeKeq','@3F3^~sBl4G&kIYpZ5','驎壂裁VYfG-',0,2.985800000000), (7810685745863923195,'9@kPCM7BigPAg4$_f',')NXFIF=vJ7(uV','8霡8VnzG',0,0.457000000000), (3400475181864597903,'_9Gdz0gofEI','','Lo齕躻EE%校摗8$fO鯙p峻',0,29553.990000000000), (5609416006647754759,'XFx=h*QR-Y4gWgP','','=迀V骾%嘰W誃-(巵x!',0,9489.428200000000), (9223372036854775807,'','cdWRmuWoIq','oDD9HZJyf勱J科庛8浽賭h袖',0,12.000000000000), (243833322126326231,'uHzT_tQYFL@DsEzwfr','bH','樁k灑XR=CRhO撛!绁g=检i5',1,693.093900000000), (5471971712899055342,'bw1gy)rsK8lK7uMKq','2bKdjhL1RU+a&)','!牋--嚪璜fJ-莺蕷XK钨傆B8NH',1,67.284000000000), (5434511054005380498,'-&zUUM)@9lqYc+','booJaEVWIIr9a@','j轆MNVr',0,25566.000000000000), (1935102229774639976,'bdDPbUeij8EvUhxf=xQ','','鏢(2闅Ah&s~攭3坫cF韴8蒰7n',0,177.321000000000), (5236837117944388619,'&WGkOfExx!2*v!~fcD','(e','齪E憭D&隅',1,1100.830000000000), (5481405938940158770,'U^GdPEO7qSC@It+','(%T(vby68W&','',1,2724.946500000000), (3145070693304620449,'*muZcn)w(hU^','_4','捪B驝戉8X1亯F曞糘=禈e',1,NULL), (9223372036854775807,'rFZxVn!yED^','Up+wJ','谬y襆',1,560291.370000000000), (6882844011534129022,'WI','OcE=(bL1-(','UL柃摩)8&S匩i9C3v渣bPa苴',0,3043.600000000000), (5807330521589456277,'vWBxf=!e=8#a0WT4xU','c=AE#uX^ffS0','R教b%G覑%G乽0暻MMUK犛v旉',1,7170.080000000000);
+
+drop table if exists `tfe82cdf0`;
+
+CREATE TABLE `tfe82cdf0` (
+  `col_44` bigint(20) unsigned NOT NULL DEFAULT '14864164549230664174',
+  PRIMARY KEY (`col_44`) /*T![clustered_index] CLUSTERED */,
+  KEY `idx_18` (`col_44`),
+  KEY `idx_20` (`col_44`)
+) ENGINE=InnoDB DEFAULT CHARSET=gbk COLLATE=gbk_chinese_ci;
+
+INSERT INTO `tfe82cdf0` VALUES (10977737370755836654), (11086630863791110943), (16013343436836302400);
+
+SELECT 1 FROM (`tfe82cdf0`) JOIN `tb416b66c` GROUP BY `tfe82cdf0`.`col_44` HAVING NOT (`tfe82cdf0`.`col_44` BETWEEN 1 AND 9223372036854775807)
+AND `tfe82cdf0`.`col_44`>4683771291453564204;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0-alpha-123-g47e4b5bf31-dirty
+Edition: Community
+Git Commit Hash: 47e4b5bf312aa9219f2589145c4e145590e0785f
+Git Branch: HEAD
+UTC Build Time: 2024-03-22 03:05:32
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on 47e4b5bf312aa9219f2589145c4e145590e0785f-----------------
+--------------------------------------------------------------------------------------
+47e4b5bf312aa9219f2589145c4e145590e0785f is the first bad commit
+commit 47e4b5bf312aa9219f2589145c4e145590e0785f
+Author: wjHuang <huangwenjun1997@gmail.com>
+Date:   Thu Mar 17 10:43:53 2022 +0800
+
+    *: revert #27021 to fix a bug that selection can not be pushed down when having clause above aggregation (#33168)
+    
+    close pingcap/tidb#33166
+
+ executor/aggregate_test.go                               | 12 ------------
+ planner/core/logical_plan_builder.go                     |  2 +-
+ planner/core/logical_plans.go                            |  3 ---
+ planner/core/rule_predicate_push_down.go                 | 15 +++++----------
+ planner/core/testdata/ordered_result_mode_suite_out.json | 12 ++++++------
+ planner/core/testdata/plan_suite_unexported_out.json     | 12 ++++++------
+ statistics/testdata/stats_suite_out.json                 |  6 +++---
+ 7 files changed, 21 insertions(+), 41 deletions(-)
+bisect found first bad commit

@@ -1,0 +1,35 @@
+
+Commit ab4c20ba165bb4eba47cd012df330fd6a72f177d : Success
+Commit 8d181ede017d2ba7d35f72993e6f07b56f6e00de : Success
+Commit 7b8c876800e95c6dbc69a4c2fead032ccfd6e574 : Success
+Commit 89fc4403f3a05d59a6793bf1965dc2281e3fb29f : Success
+Commit b4ba24b12999bd2207d06722cfd5c2cf64ad0281 : Success
+Commit 078aeb27637b6418fbbc4dbae62ed60f29a5430a : Success
+Commit f573a65933ccc0e264547c7723723d1df0c7c299 : Failure
+Commit 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2 : Failure
+Commit a0ce8e02840a0725ff6b270a4aa06370d128dcc4 : Failure
+Commit acd3ddc5e71ad2df44e6eb596553c5c20c4af818 : Success
+# bad: [52794d985ba6325d75a714d4eaa0838d59425eb6] executor: use analyze scan concurrency to control index analyze (#50639) (#50642)
+# good: [069631e2ecfedc000ffb92c67207bea81380f020] *: fix wrong result when to concurrency merge global stats  (#48852) (#48864)
+git bisect start 'v7.6.0' 'v7.5.0'
+# good: [ab4c20ba165bb4eba47cd012df330fd6a72f177d] importinto: revert "use one writer for each kv group for all concurrent encoder" (#47666)
+git bisect good ab4c20ba165bb4eba47cd012df330fd6a72f177d
+# good: [8d181ede017d2ba7d35f72993e6f07b56f6e00de] executor, codec: hash join build wrong hash key for ENUM/SET value (#49031)
+git bisect good 8d181ede017d2ba7d35f72993e6f07b56f6e00de
+# good: [7b8c876800e95c6dbc69a4c2fead032ccfd6e574] log_backup: add lock for truncating (#49469)
+git bisect good 7b8c876800e95c6dbc69a4c2fead032ccfd6e574
+# good: [89fc4403f3a05d59a6793bf1965dc2281e3fb29f] Lightning : make pebbleDB block size configurable (#49514)
+git bisect good 89fc4403f3a05d59a6793bf1965dc2281e3fb29f
+# good: [b4ba24b12999bd2207d06722cfd5c2cf64ad0281] parser: remove universal keyword (#50103)
+git bisect good b4ba24b12999bd2207d06722cfd5c2cf64ad0281
+# good: [078aeb27637b6418fbbc4dbae62ed60f29a5430a] br: backup/restore statistic data in the partition dimension (#49628)
+git bisect good 078aeb27637b6418fbbc4dbae62ed60f29a5430a
+# bad: [f573a65933ccc0e264547c7723723d1df0c7c299] planner: fix panic when table path and mv index path are both used in access path (#50474) (#50480)
+git bisect bad f573a65933ccc0e264547c7723723d1df0c7c299
+# bad: [2df8bd1fc0fb5100bddf94f6bebe4e43878becc2] domain: record latest schema version after syncer restarted (#49929) (#50243)
+git bisect bad 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2
+# bad: [a0ce8e02840a0725ff6b270a4aa06370d128dcc4] planner: avoid scanning multi-valued index when there is no condition related | tidb-test=pr/2278 (#50183) (#50303)
+git bisect bad a0ce8e02840a0725ff6b270a4aa06370d128dcc4
+# good: [acd3ddc5e71ad2df44e6eb596553c5c20c4af818] deps, lightning: update the PD HTTP client to refine the retry logic (#50225) (#50244)
+git bisect good acd3ddc5e71ad2df44e6eb596553c5c20c4af818
+# first bad commit: [a0ce8e02840a0725ff6b270a4aa06370d128dcc4] planner: avoid scanning multi-valued index when there is no condition related | tidb-test=pr/2278 (#50183) (#50303)

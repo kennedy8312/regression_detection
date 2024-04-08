@@ -1,0 +1,8 @@
+id	estRows	task	access object	operator info
+TableReader_7	10.00	root	partition:p4	data:Selection_6
+└─Selection_6	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_5	10000.00	cop[tikv]	table:t	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_7	10.00	root	partition:p4	data:Selection_6
+└─Selection_6	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_5	10000.00	cop[tikv]	table:t	keep order:false, stats:pseudo

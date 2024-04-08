@@ -1,0 +1,18 @@
+id	estRows	actRows	task	access object	execution info	operator info	memory	disk
+IndexLookUp_11	0.00	1	root		time:609.9µs, loops:2, index_task: {total_time: 239.9µs, fetch_handle: 238.4µs, build: 167ns, wait: 1.38µs}, table_task: {total_time: 195.8µs, num: 1, concurrency: 5}		19.5 KB	N/A
+├─Selection_10(Build)	0.00	1	cop[tikv]		time:235.9µs, loops:3, cop_task: {num: 1, max: 216.3µs, proc_keys: 1, rpc_num: 1, rpc_time: 211.4µs, copr_cache_hit_ratio: 0.00, distsql_concurrency: 15}, tikv_task:{time:0s, loops:1}, scan_detail: {total_process_keys: 1, total_process_keys_size: 57, total_keys: 2, get_snapshot_time: 7.88µs, rocksdb: {delete_skipped_count: 1, key_skipped_count: 2, block: {}}}	eq(test.sbtest1.id, 1)	N/A	N/A
+│ └─IndexRangeScan_8	1.00	1	cop[tikv]	table:sbtest1, index:id_1(id_1)	tikv_task:{time:0s, loops:1}	range:[1,1], keep order:false	N/A	N/A
+└─TableRowIDScan_9(Probe)	0.00	1	cop[tikv]	table:sbtest1	time:173.5µs, loops:2, cop_task: {num: 1, max: 160.2µs, proc_keys: 1, rpc_num: 1, rpc_time: 155.1µs, copr_cache_hit_ratio: 0.00, distsql_concurrency: 15}, tikv_task:{time:0s, loops:1}, scan_detail: {total_process_keys: 1, total_process_keys_size: 225, total_keys: 3, get_snapshot_time: 5.25µs, rocksdb: {delete_skipped_count: 1, key_skipped_count: 3, block: {}}}	keep order:false	N/A	N/A
+id	estRows	actRows	task	access object	execution info	operator info	memory	disk
+IndexLookUp_11	0.00	0	root		time:178.4µs, loops:1		277 Bytes	N/A
+├─Selection_10(Build)	0.00	0	cop[tikv]		time:147.3µs, loops:1, cop_task: {num: 1, max: 134.1µs, proc_keys: 0, rpc_num: 1, rpc_time: 129.8µs, copr_cache_hit_ratio: 0.00, distsql_concurrency: 15}, tikv_task:{time:0s, loops:1}, scan_detail: {total_keys: 1, get_snapshot_time: 5.67µs, rocksdb: {block: {}}}	eq(test.sbtest1.id, 1)	N/A	N/A
+│ └─IndexRangeScan_8	1.00	0	cop[tikv]	table:sbtest1, index:id_1(id_1)	tikv_task:{time:0s, loops:1}	range:[0,0], keep order:false	N/A	N/A
+└─TableRowIDScan_9(Probe)	0.00	0	cop[tikv]	table:sbtest1		keep order:false	N/A	N/A
+id	estRows	actRows	task	access object	execution info	operator info	memory	disk
+TableReader_7	0.00	1	root		time:172.5µs, loops:2, cop_task: {num: 1, max: 159.7µs, proc_keys: 1, rpc_num: 1, rpc_time: 154.7µs, copr_cache_hit_ratio: 0.00, distsql_concurrency: 15}	data:Selection_6	540 Bytes	N/A
+└─Selection_6	0.00	1	cop[tikv]		tikv_task:{time:0s, loops:1}, scan_detail: {total_process_keys: 1, total_process_keys_size: 225, total_keys: 3, get_snapshot_time: 8.13µs, rocksdb: {delete_skipped_count: 1, key_skipped_count: 3, block: {}}}	eq(test.sbtest1.id_1, 1)	N/A	N/A
+  └─TableRangeScan_5	1.00	1	cop[tikv]	table:sbtest1	tikv_task:{time:0s, loops:1}	range:[1,1], keep order:false	N/A	N/A
+id	estRows	actRows	task	access object	execution info	operator info	memory	disk
+TableReader_7	0.00	0	root		time:218.9µs, loops:1, cop_task: {num: 1, max: 204.3µs, proc_keys: 1, rpc_num: 1, rpc_time: 197.1µs, copr_cache_hit_ratio: 0.00, distsql_concurrency: 15}	data:Selection_6	264 Bytes	N/A
+└─Selection_6	0.00	0	cop[tikv]		tikv_task:{time:0s, loops:1}, scan_detail: {total_process_keys: 1, total_process_keys_size: 225, total_keys: 3, get_snapshot_time: 8.21µs, rocksdb: {delete_skipped_count: 1, key_skipped_count: 3, block: {}}}	eq(test.sbtest1.id_1, 0)	N/A	N/A
+  └─TableRangeScan_5	1.00	1	cop[tikv]	table:sbtest1	tikv_task:{time:0s, loops:1}	range:[1,1], keep order:false	N/A	N/A

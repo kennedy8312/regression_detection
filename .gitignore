@@ -1,0 +1,7 @@
+# Ingore some folders, please don't modify this part
+make_detect
+testcase_oncall
+manual_check
+to_be_confirmed
+**/tiup-startup-temp.log
+.DS_Store

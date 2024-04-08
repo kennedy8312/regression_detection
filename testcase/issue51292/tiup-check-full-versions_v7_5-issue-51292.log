@@ -1,0 +1,69 @@
+Start to analyze regression behavior among releases for issue 51292
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.5.0-----------------
+Server on v7.5.0 started.
+Validation passed. v7.5.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.0
+Edition: Community
+Git Commit Hash: 069631e2ecfedc000ffb92c67207bea81380f020
+Git Branch: heads/refs/tags/v7.5.0
+UTC Build Time: 2023-11-24 08:41:10
+GoVersion: go1.21.3
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.5.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.5.1-----------------
+Server on v7.5.1 started.
+Validation passed. v7.5.1 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.1
+Edition: Community
+Git Commit Hash: 7d16cc79e81bbf573124df3fd9351c26963f3e70
+Git Branch: heads/refs/tags/v7.5.1
+UTC Build Time: 2024-02-27 14:21:44
+GoVersion: go1.21.6
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.5.1-----------------
+----------------------------------------------------------------------

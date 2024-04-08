@@ -1,0 +1,844 @@
+
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v5.4.0-----------------
+Server on v5.4.0 started.
+Validation failed at run 1. v5.4.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v5.4.0
+Edition: Community
+Git Commit Hash: 55f3b24c1c9f506bd652ef1d162283541e428872
+Git Branch: heads/refs/tags/v5.4.0
+UTC Build Time: 2022-01-25 08:41:03
+GoVersion: go1.16.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on v5.4.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.0.0-----------------
+Server on v6.0.0 started.
+Validation failed at run 1. v6.0.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0
+Edition: Community
+Git Commit Hash: 36a9810441ca0e496cbd22064af274b3be771081
+Git Branch: heads/refs/tags/v6.0.0
+UTC Build Time: 2022-03-31 10:27:58
+GoVersion: go1.18
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on v6.0.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.1.0-----------------
+Server on v6.1.0 started.
+Validation failed at run 1. v6.1.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.1.0
+Edition: Community
+Git Commit Hash: 1a89decdb192cbdce6a7b0020d71128bc964d30f
+Git Branch: heads/refs/tags/v6.1.0
+UTC Build Time: 2022-06-05 05:09:33
+GoVersion: go1.18.2
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on v6.1.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.2.0-----------------
+Server on v6.2.0 started.
+Validation failed at run 1. v6.2.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.2.0
+Edition: Community
+Git Commit Hash: daf2b17cdfe30c02ce282361009fb5bdb05f2b0e
+Git Branch: heads/refs/tags/v6.2.0
+UTC Build Time: 2022-08-22 13:38:40
+GoVersion: go1.18.5
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.2.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.3.0-----------------
+Server on v6.3.0 started.
+Validation failed at run 1. v6.3.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.3.0
+Edition: Community
+Git Commit Hash: ecd67531f1721d3e49eb15a202ac7c0ae02291ec
+Git Branch: heads/refs/tags/v6.3.0
+UTC Build Time: 2022-09-23 14:21:08
+GoVersion: go1.19.1
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.3.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.4.0-----------------
+Server on v6.4.0 started.
+Validation failed at run 1. v6.4.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.4.0
+Edition: Community
+Git Commit Hash: cf36a9ce2fe1039db3cf3444d51930b887df18a1
+Git Branch: heads/refs/tags/v6.4.0
+UTC Build Time: 2022-11-13 05:15:45
+GoVersion: go1.19
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.4.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.5.0-----------------
+Server on v6.5.0 started.
+Validation failed at run 1. v6.5.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1064 (42000) at line 18: You have an error in your SQL syntax; check the manual that corresponds to your TiDB version for the right syntax to use line 1 column 71 near "array)),`col_46`(5))" 
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.5.0
+Edition: Community
+Git Commit Hash: 706c3fa3c526cdba5b3e9f066b1a568fb96c56e3
+Git Branch: heads/refs/tags/v6.5.0
+UTC Build Time: 2022-12-27 03:42:38
+GoVersion: go1.19.3
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.5.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.6.0-----------------
+Server on v6.6.0 started.
+Validation passed. v6.6.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0
+Edition: Community
+Git Commit Hash: f4ca0821fb96a2bdd37d2fb97eb26c07fc58d4e4
+Git Branch: heads/refs/tags/v6.6.0
+UTC Build Time: 2023-02-17 14:39:38
+GoVersion: go1.19.5
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.6.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.0.0-----------------
+Server on v7.0.0 started.
+Validation passed. v7.0.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.0.0
+Edition: Community
+Git Commit Hash: 7376954cd868dbc44fc3015c9ef89c53749339a7
+Git Branch: heads/refs/tags/v7.0.0
+UTC Build Time: 2023-03-29 13:22:40
+GoVersion: go1.20.2
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.0.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.0-----------------
+Server on v7.1.0 started.
+Validation passed. v7.1.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.0
+Edition: Community
+Git Commit Hash: 635a4362235e8a3c0043542e629532e3c7bb2756
+Git Branch: heads/refs/tags/v7.1.0
+UTC Build Time: 2023-05-30 10:50:03
+GoVersion: go1.20.3
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.2.0-----------------
+Server on v7.2.0 started.
+Validation passed. v7.2.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0
+Edition: Community
+Git Commit Hash: 9fd5f4a8e4f273a60fbe7d3848f85a1be8f0600b
+Git Branch: heads/refs/tags/v7.2.0
+UTC Build Time: 2023-06-27 14:56:57
+GoVersion: go1.20.5
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.2.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.3.0-----------------
+Server on v7.3.0 started.
+Validation passed. v7.3.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.3.0
+Edition: Community
+Git Commit Hash: 40b72e7a9a4fc9670d4c5d974dd503a3c6097471
+Git Branch: heads/refs/tags/v7.3.0
+UTC Build Time: 2023-08-08 09:27:28
+GoVersion: go1.20.7
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.3.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.4.0-----------------
+Server on v7.4.0 started.
+Validation passed. v7.4.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0
+Edition: Community
+Git Commit Hash: 38cb4f3312be9199a983c0ef282d2ea2e28a7824
+Git Branch: heads/refs/tags/v7.4.0
+UTC Build Time: 2023-10-10 14:10:02
+GoVersion: go1.21.0
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.4.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.5.0-----------------
+Server on v7.5.0 started.
+Validation passed. v7.5.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.0
+Edition: Community
+Git Commit Hash: 069631e2ecfedc000ffb92c67207bea81380f020
+Git Branch: heads/refs/tags/v7.5.0
+UTC Build Time: 2023-11-24 08:41:10
+GoVersion: go1.21.3
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.5.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.6.0-----------------
+Server on v7.6.0 started.
+Validation failed at run 1. v7.6.0 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0
+Edition: Community
+Git Commit Hash: 52794d985ba6325d75a714d4eaa0838d59425eb6
+Git Branch: heads/refs/tags/v7.6.0
+UTC Build Time: 2024-01-22 14:13:53
+GoVersion: go1.21.5
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.6.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on nightly-----------------
+Server on nightly started.
+Validation failed at run 1. nightly is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-363-g9b42b9f5a0
+Edition: Community
+Git Commit Hash: 9b42b9f5a05f721a194b1e6468fd9c409011e7e8
+Git Branch: HEAD
+UTC Build Time: 2024-03-01 06:59:26
+GoVersion: go1.21.6
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on nightly-----------------
+----------------------------------------------------------------------

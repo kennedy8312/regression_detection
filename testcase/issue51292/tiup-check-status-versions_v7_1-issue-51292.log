@@ -1,0 +1,6 @@
+Start to analyze regression behavior among releases for issue 51292
+Version v7.1.0 : Success
+Version v7.1.1 : Success
+Version v7.1.2 : Success
+Version v7.1.3 : Success
+Version v7.1.4 : Success

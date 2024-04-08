@@ -1,0 +1,5 @@
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo

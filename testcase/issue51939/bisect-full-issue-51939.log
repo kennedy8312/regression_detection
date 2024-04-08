@@ -1,0 +1,581 @@
+
+Bisecting: a merge base must be tested
+[ab4c20ba165bb4eba47cd012df330fd6a72f177d] importinto: revert "use one writer for each kv group for all concurrent encoder" (#47666)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.5.0-alpha-134-gab4c20ba16-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:14:08" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=ab4c20ba165bb4eba47cd012df330fd6a72f177d" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on ab4c20ba165bb4eba47cd012df330fd6a72f177d-----------------
+Server on ab4c20ba165bb4eba47cd012df330fd6a72f177d started.
+Validation passed. ab4c20ba165bb4eba47cd012df330fd6a72f177d is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.0-alpha-134-gab4c20ba16-dirty
+Edition: Community
+Git Commit Hash: ab4c20ba165bb4eba47cd012df330fd6a72f177d
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:14:08
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on ab4c20ba165bb4eba47cd012df330fd6a72f177d-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 390 revisions left to test after this (roughly 9 steps)
+[8d181ede017d2ba7d35f72993e6f07b56f6e00de] executor, codec: hash join build wrong hash key for ENUM/SET value (#49031)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-336-g8d181ede01-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:14:34" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=8d181ede017d2ba7d35f72993e6f07b56f6e00de" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 8d181ede017d2ba7d35f72993e6f07b56f6e00de-----------------
+Server on 8d181ede017d2ba7d35f72993e6f07b56f6e00de started.
+Validation passed. 8d181ede017d2ba7d35f72993e6f07b56f6e00de is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-336-g8d181ede01-dirty
+Edition: Community
+Git Commit Hash: 8d181ede017d2ba7d35f72993e6f07b56f6e00de
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:14:34
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 8d181ede017d2ba7d35f72993e6f07b56f6e00de-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 195 revisions left to test after this (roughly 8 steps)
+[7b8c876800e95c6dbc69a4c2fead032ccfd6e574] log_backup: add lock for truncating (#49469)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-531-g7b8c876800-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:14:55" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=7b8c876800e95c6dbc69a4c2fead032ccfd6e574" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 7b8c876800e95c6dbc69a4c2fead032ccfd6e574-----------------
+Server on 7b8c876800e95c6dbc69a4c2fead032ccfd6e574 started.
+Validation passed. 7b8c876800e95c6dbc69a4c2fead032ccfd6e574 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-531-g7b8c876800-dirty
+Edition: Community
+Git Commit Hash: 7b8c876800e95c6dbc69a4c2fead032ccfd6e574
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:14:55
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 7b8c876800e95c6dbc69a4c2fead032ccfd6e574-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 97 revisions left to test after this (roughly 7 steps)
+[89fc4403f3a05d59a6793bf1965dc2281e3fb29f] Lightning : make pebbleDB block size configurable (#49514)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-629-g89fc4403f3-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:15:16" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=89fc4403f3a05d59a6793bf1965dc2281e3fb29f" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 89fc4403f3a05d59a6793bf1965dc2281e3fb29f-----------------
+Server on 89fc4403f3a05d59a6793bf1965dc2281e3fb29f started.
+Validation passed. 89fc4403f3a05d59a6793bf1965dc2281e3fb29f is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-629-g89fc4403f3-dirty
+Edition: Community
+Git Commit Hash: 89fc4403f3a05d59a6793bf1965dc2281e3fb29f
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:15:16
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 89fc4403f3a05d59a6793bf1965dc2281e3fb29f-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 48 revisions left to test after this (roughly 6 steps)
+[b4ba24b12999bd2207d06722cfd5c2cf64ad0281] parser: remove universal keyword (#50103)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-678-gb4ba24b129-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:16:13" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=b4ba24b12999bd2207d06722cfd5c2cf64ad0281" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on b4ba24b12999bd2207d06722cfd5c2cf64ad0281-----------------
+Server on b4ba24b12999bd2207d06722cfd5c2cf64ad0281 started.
+Validation passed. b4ba24b12999bd2207d06722cfd5c2cf64ad0281 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-678-gb4ba24b129-dirty
+Edition: Community
+Git Commit Hash: b4ba24b12999bd2207d06722cfd5c2cf64ad0281
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:16:13
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on b4ba24b12999bd2207d06722cfd5c2cf64ad0281-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 24 revisions left to test after this (roughly 5 steps)
+[078aeb27637b6418fbbc4dbae62ed60f29a5430a] br: backup/restore statistic data in the partition dimension (#49628)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-702-g078aeb2763-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:17:11" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=078aeb27637b6418fbbc4dbae62ed60f29a5430a" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 078aeb27637b6418fbbc4dbae62ed60f29a5430a-----------------
+Server on 078aeb27637b6418fbbc4dbae62ed60f29a5430a started.
+Validation passed. 078aeb27637b6418fbbc4dbae62ed60f29a5430a is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-702-g078aeb2763-dirty
+Edition: Community
+Git Commit Hash: 078aeb27637b6418fbbc4dbae62ed60f29a5430a
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:17:11
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 078aeb27637b6418fbbc4dbae62ed60f29a5430a-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 12 revisions left to test after this (roughly 4 steps)
+[f573a65933ccc0e264547c7723723d1df0c7c299] planner: fix panic when table path and mv index path are both used in access path (#50474) (#50480)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-714-gf573a65933-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:17:58" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=f573a65933ccc0e264547c7723723d1df0c7c299" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on f573a65933ccc0e264547c7723723d1df0c7c299-----------------
+Server on f573a65933ccc0e264547c7723723d1df0c7c299 started.
+Validation failed at run 1. f573a65933ccc0e264547c7723723d1df0c7c299 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-714-gf573a65933-dirty
+Edition: Community
+Git Commit Hash: f573a65933ccc0e264547c7723723d1df0c7c299
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:17:58
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on f573a65933ccc0e264547c7723723d1df0c7c299-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 5 revisions left to test after this (roughly 3 steps)
+[2df8bd1fc0fb5100bddf94f6bebe4e43878becc2] domain: record latest schema version after syncer restarted (#49929) (#50243)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-708-g2df8bd1fc0-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:18:51" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=2df8bd1fc0fb5100bddf94f6bebe4e43878becc2" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2-----------------
+Server on 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2 started.
+Validation failed at run 1. 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-708-g2df8bd1fc0-dirty
+Edition: Community
+Git Commit Hash: 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:18:51
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 2df8bd1fc0fb5100bddf94f6bebe4e43878becc2-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 2 revisions left to test after this (roughly 2 steps)
+[a0ce8e02840a0725ff6b270a4aa06370d128dcc4] planner: avoid scanning multi-valued index when there is no condition related | tidb-test=pr/2278 (#50183) (#50303)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-705-ga0ce8e0284-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:19:23" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=a0ce8e02840a0725ff6b270a4aa06370d128dcc4" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on a0ce8e02840a0725ff6b270a4aa06370d128dcc4-----------------
+Server on a0ce8e02840a0725ff6b270a4aa06370d128dcc4 started.
+Validation failed at run 1. a0ce8e02840a0725ff6b270a4aa06370d128dcc4 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+Actual: 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+ERROR 1815 (HY000) at line 20: Internal : Can't find a proper physical plan for this query
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-705-ga0ce8e0284-dirty
+Edition: Community
+Git Commit Hash: a0ce8e02840a0725ff6b270a4aa06370d128dcc4
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:19:23
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on a0ce8e02840a0725ff6b270a4aa06370d128dcc4-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[acd3ddc5e71ad2df44e6eb596553c5c20c4af818] deps, lightning: update the PD HTTP client to refine the retry logic (#50225) (#50244)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51939/issue51939.result' '/Users/yichenhan/workload/regression_detection/issue51939' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51939/bisect-status-issue-51939.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-704-gacd3ddc5e7-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 08:19:55" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=acd3ddc5e71ad2df44e6eb596553c5c20c4af818" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on acd3ddc5e71ad2df44e6eb596553c5c20c4af818-----------------
+Server on acd3ddc5e71ad2df44e6eb596553c5c20c4af818 started.
+Validation passed. acd3ddc5e71ad2df44e6eb596553c5c20c4af818 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51939_testcase.sql
+issue51939_testcase.sql: 
+drop table if exists `tl`;
+
+CREATE TABLE `tl` (
+  `col_42` json NOT NULL,
+  `col_43` tinyint(1) DEFAULT NULL,
+  `col_44` char(168) CHARACTER SET gbk COLLATE gbk_bin DEFAULT NULL,
+  `col_45` json DEFAULT NULL,
+  `col_46` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `col_47` char(43) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'xW2YNb99pse4)',
+  `col_48` time NOT NULL DEFAULT '12:31:25',
+  PRIMARY KEY (`col_47`,`col_46`(2)) /*T![clustered_index] CLUSTERED */
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `tl` VALUES ('[\"01qHMy8yycbq2v1CZ80kiIECEQFLXYsnM0tpVh9vbx71DMpaPdp6hBkrpTodkXVt\", \"dGugZHV3pmqjLSdICAYbiwFGZsYWX9MrzgSGCslmEsfFzXYOiXyE0YMS1TSfnX5R\", \"Ypz8Jj0hBSBQbiWd3LbPRV2qvSEAxV8rlXnxpn93nXmFyMJkCQzyhtNn0FUwH6Ce\", \"Yf6kag9ruOT04V8AHT6NYhCNIa2CYZDVg8zWaxxHFm0GPAJh0e6Mc5Upa0EAp1Sr\", \"ljrRnPUdxJNkWxmkn4K25YeFwVtedGtLDrWlWYZyqt2Shpfg4p7jroOwbOZHuHiE\"]',0,'釸7鈡w歀痂暰苕rv)Ts','[5661899762065804824, 3294089805449875423, 2378579521053711229, 6262068190112960080]','Wxup81婱鍋cH爀
+2潺檛楍1N7','2ZNeu2n5-2+Q3qYp','10:14:20'), ('[\"iOl0B9dVMoNYk8Qroj6JTwm0MaCJmr5qnQzdjMtaoDar4jGe6q20HAyVu3GacogW\", \"PBy3AXmGhzJMBX3Ow9INdeATLld8bVVjrIUVTlspzpHMZPuFGlEsDeRN6JOLqRLy\", \"jyr0odf7TOhLpuejrfbvsBbjqCchHSKEFZ079c5KUhu0FIuoqm6tBNbWCBb0xb3c\", \"PmPE8oZf73Zwffi97D7AaQM5g0xameUwPvO15LEUPVlF4iiDVsXyGMESSbEzR5L7\", \"4y0WxQIzPw217QeSXCySsK3pGbHdMxx6ETtIZQfGI8v7Pq9Rxhwkslr1ih8M7Dok\"]',0,'','[2142591371645505560, 2975660707908269211]','','aC794Ir-)iJZr&a','02:30:55'), ('[\"je9igPre8L6VdmtEtVDwxCgTqcuSKdqdO4fheHXRJOQLojiHx4F8cXmFpiYq9955\", \"zPjn7sAeMVLLGE3o9lpnZai26ad8qxHNQF6CSsMshFbP2fDuByV3SYxhxkVwIQd3\", \"Etj8PQZe64XWTbBElIEhWA3F3OcytxNMLvxQqr4miDxoK96Q8fGjBg34H3i4y3V5\", \"IDNAQjueBRQyUE285zoPSMhIvVKrxbiXAVvge0iC9AaEFK18Gh3sign84Nu6M3Ar\", \"MK79tEDnyHn2Cmw4W55hEzAsKvqUTZbViv6UyiEqnUE9jpBOnMEDQbq6yQip4qm3\"]',1,')譺
+)RK5','[1760220588316922379, 4921535278728445755, 5623214347361271244, 5272407040485486430, 9017432485293265763]','RLFF','gS','06:27:28');
+
+alter table tl add index idx_16(`col_48`,(cast(`col_45` as signed array)),`col_46`(5));
+
+desc select col_47 from tl where col_48 = '10:14:20';
+
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+Projection_4	10.00	root		test.tl.col_47
+└─IndexMerge_7	10.00	root		type: union
+  ├─IndexRangeScan_5(Build)	10.00	cop[tikv]	table:tl, index:idx_16(col_48, cast(`col_45` as signed array), col_46)	range:[10:14:20,10:14:20], keep order:false, stats:pseudo
+  └─TableRowIDScan_6(Probe)	10.00	cop[tikv]	table:tl	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-704-gacd3ddc5e7-dirty
+Edition: Community
+Git Commit Hash: acd3ddc5e71ad2df44e6eb596553c5c20c4af818
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 08:19:55
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on acd3ddc5e71ad2df44e6eb596553c5c20c4af818-----------------
+--------------------------------------------------------------------------------------
+a0ce8e02840a0725ff6b270a4aa06370d128dcc4 is the first bad commit
+commit a0ce8e02840a0725ff6b270a4aa06370d128dcc4
+Author: Ti Chi Robot <ti-community-prow-bot@tidb.io>
+Date:   Thu Jan 11 15:07:55 2024 +0800
+
+    planner: avoid scanning multi-valued index when there is no condition related | tidb-test=pr/2278 (#50183) (#50303)
+    
+    close pingcap/tidb#50125
+
+ pkg/executor/test/analyzetest/analyze_test.go      |  18 ++--
+ pkg/planner/cardinality/selectivity.go             |   3 +
+ pkg/planner/core/indexmerge_path.go                | 101 +++++++++++++++++----
+ pkg/planner/core/planbuilder.go                    |  13 +++
+ .../r/planner/core/indexmerge_path.result          |  90 ++++++++++++------
+ .../t/planner/core/casetest/index/index.test       |   1 -
+ .../t/planner/core/indexmerge_path.test            |  18 +++-
+ 7 files changed, 181 insertions(+), 63 deletions(-)
+bisect found first bad commit

@@ -1,0 +1,554 @@
+
+Bisecting: a merge base must be tested
+[ab4c20ba165bb4eba47cd012df330fd6a72f177d] importinto: revert "use one writer for each kv group for all concurrent encoder" (#47666)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.5.0-alpha-134-gab4c20ba16-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:16:57" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=ab4c20ba165bb4eba47cd012df330fd6a72f177d" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on ab4c20ba165bb4eba47cd012df330fd6a72f177d-----------------
+Server on ab4c20ba165bb4eba47cd012df330fd6a72f177d started.
+Validation passed. ab4c20ba165bb4eba47cd012df330fd6a72f177d is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.0-alpha-134-gab4c20ba16-dirty
+Edition: Community
+Git Commit Hash: ab4c20ba165bb4eba47cd012df330fd6a72f177d
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:16:57
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on ab4c20ba165bb4eba47cd012df330fd6a72f177d-----------------
+----------------------------------------------------------------------
+Bisecting: 390 revisions left to test after this (roughly 9 steps)
+[8d181ede017d2ba7d35f72993e6f07b56f6e00de] executor, codec: hash join build wrong hash key for ENUM/SET value (#49031)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-336-g8d181ede01-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:18:04" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=8d181ede017d2ba7d35f72993e6f07b56f6e00de" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 8d181ede017d2ba7d35f72993e6f07b56f6e00de-----------------
+Server on 8d181ede017d2ba7d35f72993e6f07b56f6e00de started.
+Validation passed. 8d181ede017d2ba7d35f72993e6f07b56f6e00de is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-336-g8d181ede01-dirty
+Edition: Community
+Git Commit Hash: 8d181ede017d2ba7d35f72993e6f07b56f6e00de
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:18:04
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 8d181ede017d2ba7d35f72993e6f07b56f6e00de-----------------
+----------------------------------------------------------------------
+Bisecting: 195 revisions left to test after this (roughly 8 steps)
+[7b8c876800e95c6dbc69a4c2fead032ccfd6e574] log_backup: add lock for truncating (#49469)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-531-g7b8c876800-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:19:09" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=7b8c876800e95c6dbc69a4c2fead032ccfd6e574" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 7b8c876800e95c6dbc69a4c2fead032ccfd6e574-----------------
+Server on 7b8c876800e95c6dbc69a4c2fead032ccfd6e574 started.
+Validation failed at run 1. 7b8c876800e95c6dbc69a4c2fead032ccfd6e574 is a bad label. Expected: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo. Actual: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-531-g7b8c876800-dirty
+Edition: Community
+Git Commit Hash: 7b8c876800e95c6dbc69a4c2fead032ccfd6e574
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:19:09
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 7b8c876800e95c6dbc69a4c2fead032ccfd6e574-----------------
+----------------------------------------------------------------------
+Bisecting: 97 revisions left to test after this (roughly 7 steps)
+[80c6fc1fbd547c37dcb90518a21a3ee9a01f034a] executor: recover panic in executor.Close() (#49222)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-433-g80c6fc1fbd-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:20:06" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=80c6fc1fbd547c37dcb90518a21a3ee9a01f034a" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+go: downloading github.com/tikv/client-go/v2 v2.0.8-0.20231201024404-0ff16620f6c0
+go: downloading github.com/tikv/pd/client v0.0.0-20231130081618-862eee18738e
+go: downloading golang.org/x/tools v0.16.0
+go: downloading golang.org/x/crypto v0.16.0
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a-----------------
+Server on 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a started.
+Validation failed at run 1. 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a is a bad label. Expected: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo. Actual: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-433-g80c6fc1fbd-dirty
+Edition: Community
+Git Commit Hash: 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:20:06
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a-----------------
+----------------------------------------------------------------------
+Bisecting: 48 revisions left to test after this (roughly 6 steps)
+[d932d907f80bd2f9836be534462f8de2d66d8b7d] errmsg: fix example s3 url in error msg (#49207)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-384-gd932d907f8-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:21:52" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=d932d907f80bd2f9836be534462f8de2d66d8b7d" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on d932d907f80bd2f9836be534462f8de2d66d8b7d-----------------
+Server on d932d907f80bd2f9836be534462f8de2d66d8b7d started.
+Validation failed at run 1. d932d907f80bd2f9836be534462f8de2d66d8b7d is a bad label. Expected: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo. Actual: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-384-gd932d907f8-dirty
+Edition: Community
+Git Commit Hash: d932d907f80bd2f9836be534462f8de2d66d8b7d
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:21:52
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on d932d907f80bd2f9836be534462f8de2d66d8b7d-----------------
+----------------------------------------------------------------------
+Bisecting: 23 revisions left to test after this (roughly 5 steps)
+[b21bb3e7a71d493ed09606e5171572e90b7001dc] disttask: rename scheduler to TaskExecutor (#49025)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-360-gb21bb3e7a7-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:22:57" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=b21bb3e7a71d493ed09606e5171572e90b7001dc" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on b21bb3e7a71d493ed09606e5171572e90b7001dc-----------------
+Server on b21bb3e7a71d493ed09606e5171572e90b7001dc started.
+Validation passed. b21bb3e7a71d493ed09606e5171572e90b7001dc is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-360-gb21bb3e7a7-dirty
+Edition: Community
+Git Commit Hash: b21bb3e7a71d493ed09606e5171572e90b7001dc
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:22:57
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on b21bb3e7a71d493ed09606e5171572e90b7001dc-----------------
+----------------------------------------------------------------------
+Bisecting: 11 revisions left to test after this (roughly 4 steps)
+[0fd779c623a77ce13c7b6d9e42da615aed16f8e1] *: exclude `**/.git/**` in licenserc.yml (#49157)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-372-g0fd779c623-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:23:43" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=0fd779c623a77ce13c7b6d9e42da615aed16f8e1" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 0fd779c623a77ce13c7b6d9e42da615aed16f8e1-----------------
+Server on 0fd779c623a77ce13c7b6d9e42da615aed16f8e1 started.
+Validation passed. 0fd779c623a77ce13c7b6d9e42da615aed16f8e1 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-372-g0fd779c623-dirty
+Edition: Community
+Git Commit Hash: 0fd779c623a77ce13c7b6d9e42da615aed16f8e1
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:23:43
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 0fd779c623a77ce13c7b6d9e42da615aed16f8e1-----------------
+----------------------------------------------------------------------
+Bisecting: 5 revisions left to test after this (roughly 3 steps)
+[2aa35f009785098e02e44b61a1b45c77fa4abf25] tests: update `run-tests.sh` for integrationtest (#49160)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-378-g2aa35f0097-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:24:26" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=2aa35f009785098e02e44b61a1b45c77fa4abf25" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 2aa35f009785098e02e44b61a1b45c77fa4abf25-----------------
+Server on 2aa35f009785098e02e44b61a1b45c77fa4abf25 started.
+Validation passed. 2aa35f009785098e02e44b61a1b45c77fa4abf25 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-378-g2aa35f0097-dirty
+Edition: Community
+Git Commit Hash: 2aa35f009785098e02e44b61a1b45c77fa4abf25
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:24:26
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 2aa35f009785098e02e44b61a1b45c77fa4abf25-----------------
+----------------------------------------------------------------------
+Bisecting: 2 revisions left to test after this (roughly 2 steps)
+[7c3746685d1fa242eac7cbf5653497f954a1ca73] server: register compression statistics and fix the memory leak (#49193)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-381-g7c3746685d-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:25:10" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=7c3746685d1fa242eac7cbf5653497f954a1ca73" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 7c3746685d1fa242eac7cbf5653497f954a1ca73-----------------
+Server on 7c3746685d1fa242eac7cbf5653497f954a1ca73 started.
+Validation passed. 7c3746685d1fa242eac7cbf5653497f954a1ca73 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-381-g7c3746685d-dirty
+Edition: Community
+Git Commit Hash: 7c3746685d1fa242eac7cbf5653497f954a1ca73
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:25:10
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 7c3746685d1fa242eac7cbf5653497f954a1ca73-----------------
+----------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[0c7659c1907dd033af8b13b15eee1960a0d9ee79] executor: fix deadlock in dml statement with cte when oom panic action was triggered (#49192)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-383-g0c7659c190-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:25:52" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=0c7659c1907dd033af8b13b15eee1960a0d9ee79" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 0c7659c1907dd033af8b13b15eee1960a0d9ee79-----------------
+Server on 0c7659c1907dd033af8b13b15eee1960a0d9ee79 started.
+Validation failed at run 1. 0c7659c1907dd033af8b13b15eee1960a0d9ee79 is a bad label. Expected: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo. Actual: id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-383-g0c7659c190-dirty
+Edition: Community
+Git Commit Hash: 0c7659c1907dd033af8b13b15eee1960a0d9ee79
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:25:52
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 0c7659c1907dd033af8b13b15eee1960a0d9ee79-----------------
+----------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[e053c27f068bb9498b312dd6e4d95695824696a2] util/ranger: support use `like` to build range for new collation columns (#48522)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51316/issue51316.result' '/Users/yichenhan/workload/regression_detection/issue51316' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51316/bisect-status-issue-51316.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-382-ge053c27f06-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-04 08:26:21" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=e053c27f068bb9498b312dd6e4d95695824696a2" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on e053c27f068bb9498b312dd6e4d95695824696a2-----------------
+Server on e053c27f068bb9498b312dd6e4d95695824696a2 started.
+Validation failed at run 1. e053c27f068bb9498b312dd6e4d95695824696a2 is a bad label.
+Expected: 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+Actual: 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51316_testcase.sql
+issue51316_testcase.sql: 
+drop table if exists t;
+create table t(col varchar(32) COLLATE utf8mb4_general_ci DEFAULT NULL) PARTITION BY KEY (`col`) PARTITIONS 7;
+explain select * from t where col = 'linpin';
+explain select * from t where col = 'LINPIN';
+-----------------Test Result-----------------
+Result : 
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "linpin")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p4	keep order:false, stats:pseudo
+id	estRows	task	access object	operator info
+TableReader_8	10.00	root		data:Selection_7
+└─Selection_7	10.00	cop[tikv]		eq(test.t.col, "LINPIN")
+  └─TableFullScan_6	10000.00	cop[tikv]	table:t, partition:p3	keep order:false, stats:pseudo
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-382-ge053c27f06-dirty
+Edition: Community
+Git Commit Hash: e053c27f068bb9498b312dd6e4d95695824696a2
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 08:26:21
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on e053c27f068bb9498b312dd6e4d95695824696a2-----------------
+----------------------------------------------------------------------
+e053c27f068bb9498b312dd6e4d95695824696a2 is the first bad commit
+commit e053c27f068bb9498b312dd6e4d95695824696a2
+Author: Zhou Kunqin <25057648+time-and-fate@users.noreply.github.com>
+Date:   Tue Dec 5 21:20:49 2023 +0800
+
+    util/ranger: support use `like` to build range for new collation columns (#48522)
+    
+    close pingcap/tidb#48181, close pingcap/tidb#49138
+
+ pkg/planner/core/integration_test.go               |  12 +-
+ .../core/testdata/index_merge_suite_out.json       |  15 +-
+ pkg/util/ranger/BUILD.bazel                        |   1 +
+ pkg/util/ranger/checker.go                         |  10 -
+ pkg/util/ranger/detacher.go                        |  27 +-
+ pkg/util/ranger/points.go                          | 195 ++++-
+ pkg/util/ranger/ranger.go                          |  43 +-
+ pkg/util/ranger/ranger_test.go                     |   6 +-
+ .../r/expression/charset_and_collation.result      |   8 +-
+ tests/integrationtest/r/expression/issues.result   |   6 +-
+ .../r/planner/core/issuetest/planner_issue.result  |  22 +-
+ .../r/planner/core/range_scan_for_like.result      | 782 +++++++++++----------
+ .../t/planner/core/range_scan_for_like.test        |  22 +-
+ 13 files changed, 673 insertions(+), 476 deletions(-)
+bisect found first bad commit

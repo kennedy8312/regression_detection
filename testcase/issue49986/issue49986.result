@@ -1,0 +1,15 @@
+id	estRows	task	access object	operator info
+CTEFullScan_25	8.00	root	CTE:t1	data:CTE_1
+CTE_1	8.00	root		Non-Recursive CTE
+└─Projection_21(Seed Part)	8.00	root		test.ast.i, Column#11
+  └─HashAgg_22	8.00	root		group by:test.ast.i, funcs:group_concat(Column#10 order by Column#10 separator "; ")->Column#11, funcs:firstrow(test.ast.i)->test.ast.i
+    └─CTEFullScan_23	100.00	root	CTE:t	data:CTE_0
+CTE_0	100.00	root		Non-Recursive CTE
+└─Projection_12(Seed Part)	100.00	root		test.ast.i, case(eq(test.acc.j, 20001), test.acc.l, test.acc.k)->Column#8
+  └─HashJoin_13	100.00	root		CARTESIAN inner join
+    ├─TableReader_20(Build)	10.00	root		data:Selection_19
+    │ └─Selection_19	10.00	cop[tikv]		eq("astp2019121731703151", test.acc.m)
+    │   └─TableFullScan_18	10000.00	cop[tikv]	table:b	keep order:false, stats:pseudo
+    └─TableReader_17(Probe)	10.00	root		data:Selection_16
+      └─Selection_16	10.00	cop[tikv]		eq(test.ast.i, "astp2019121731703151")
+        └─TableFullScan_15	10000.00	cop[tikv]	table:a	keep order:false, stats:pseudo

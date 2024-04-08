@@ -1,0 +1,38 @@
+
+Commit ab4c20ba165bb4eba47cd012df330fd6a72f177d : Success
+Commit 8d181ede017d2ba7d35f72993e6f07b56f6e00de : Success
+Commit 7b8c876800e95c6dbc69a4c2fead032ccfd6e574 : Failure
+Commit 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a : Failure
+Commit d932d907f80bd2f9836be534462f8de2d66d8b7d : Failure
+Commit b21bb3e7a71d493ed09606e5171572e90b7001dc : Success
+Commit 0fd779c623a77ce13c7b6d9e42da615aed16f8e1 : Success
+Commit 2aa35f009785098e02e44b61a1b45c77fa4abf25 : Success
+Commit 7c3746685d1fa242eac7cbf5653497f954a1ca73 : Success
+Commit 0c7659c1907dd033af8b13b15eee1960a0d9ee79 : Failure
+Commit e053c27f068bb9498b312dd6e4d95695824696a2 : Failure
+# bad: [52794d985ba6325d75a714d4eaa0838d59425eb6] executor: use analyze scan concurrency to control index analyze (#50639) (#50642)
+# good: [069631e2ecfedc000ffb92c67207bea81380f020] *: fix wrong result when to concurrency merge global stats  (#48852) (#48864)
+git bisect start 'v7.6.0' 'v7.5.0'
+# good: [ab4c20ba165bb4eba47cd012df330fd6a72f177d] importinto: revert "use one writer for each kv group for all concurrent encoder" (#47666)
+git bisect good ab4c20ba165bb4eba47cd012df330fd6a72f177d
+# good: [8d181ede017d2ba7d35f72993e6f07b56f6e00de] executor, codec: hash join build wrong hash key for ENUM/SET value (#49031)
+git bisect good 8d181ede017d2ba7d35f72993e6f07b56f6e00de
+# bad: [7b8c876800e95c6dbc69a4c2fead032ccfd6e574] log_backup: add lock for truncating (#49469)
+git bisect bad 7b8c876800e95c6dbc69a4c2fead032ccfd6e574
+# bad: [80c6fc1fbd547c37dcb90518a21a3ee9a01f034a] executor: recover panic in executor.Close() (#49222)
+git bisect bad 80c6fc1fbd547c37dcb90518a21a3ee9a01f034a
+# bad: [d932d907f80bd2f9836be534462f8de2d66d8b7d] errmsg: fix example s3 url in error msg (#49207)
+git bisect bad d932d907f80bd2f9836be534462f8de2d66d8b7d
+# good: [b21bb3e7a71d493ed09606e5171572e90b7001dc] disttask: rename scheduler to TaskExecutor (#49025)
+git bisect good b21bb3e7a71d493ed09606e5171572e90b7001dc
+# good: [0fd779c623a77ce13c7b6d9e42da615aed16f8e1] *: exclude `**/.git/**` in licenserc.yml (#49157)
+git bisect good 0fd779c623a77ce13c7b6d9e42da615aed16f8e1
+# good: [2aa35f009785098e02e44b61a1b45c77fa4abf25] tests: update `run-tests.sh` for integrationtest (#49160)
+git bisect good 2aa35f009785098e02e44b61a1b45c77fa4abf25
+# good: [7c3746685d1fa242eac7cbf5653497f954a1ca73] server: register compression statistics and fix the memory leak (#49193)
+git bisect good 7c3746685d1fa242eac7cbf5653497f954a1ca73
+# bad: [0c7659c1907dd033af8b13b15eee1960a0d9ee79] executor: fix deadlock in dml statement with cte when oom panic action was triggered (#49192)
+git bisect bad 0c7659c1907dd033af8b13b15eee1960a0d9ee79
+# bad: [e053c27f068bb9498b312dd6e4d95695824696a2] util/ranger: support use `like` to build range for new collation columns (#48522)
+git bisect bad e053c27f068bb9498b312dd6e4d95695824696a2
+# first bad commit: [e053c27f068bb9498b312dd6e4d95695824696a2] util/ranger: support use `like` to build range for new collation columns (#48522)

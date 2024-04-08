@@ -1,0 +1,25 @@
+git bisect start 'v7.6.0' 'v7.5.0'
+# good: [ab4c20ba165bb4eba47cd012df330fd6a72f177d] importinto: revert "use one writer for each kv group for all concurrent encoder" (#47666)
+git bisect good ab4c20ba165bb4eba47cd012df330fd6a72f177d
+# good: [8d181ede017d2ba7d35f72993e6f07b56f6e00de] executor, codec: hash join build wrong hash key for ENUM/SET value (#49031)
+git bisect good 8d181ede017d2ba7d35f72993e6f07b56f6e00de
+# good: [7b8c876800e95c6dbc69a4c2fead032ccfd6e574] log_backup: add lock for truncating (#49469)
+git bisect good 7b8c876800e95c6dbc69a4c2fead032ccfd6e574
+# good: [89fc4403f3a05d59a6793bf1965dc2281e3fb29f] Lightning : make pebbleDB block size configurable (#49514)
+git bisect good 89fc4403f3a05d59a6793bf1965dc2281e3fb29f
+# bad: [b4ba24b12999bd2207d06722cfd5c2cf64ad0281] parser: remove universal keyword (#50103)
+git bisect bad b4ba24b12999bd2207d06722cfd5c2cf64ad0281
+# good: [494d9f07698bee249119919fc552b6fc5de1a5f6] parser: support hints in 'REPLACE INTO' statement (#50007)
+git bisect good 494d9f07698bee249119919fc552b6fc5de1a5f6
+# bad: [3ced9758512c9aefbfd61aa106404a5c7bdef9f3] util: Use TLSv1.2 as minimum TLS version by default (#36037)
+git bisect bad 3ced9758512c9aefbfd61aa106404a5c7bdef9f3
+# good: [8cebf0f7c770cf807bf4bae0928ff552c99e2941] planner: simplify global and session binding handle (#50063)
+git bisect good 8cebf0f7c770cf807bf4bae0928ff552c99e2941
+# good: [a1fd1bee0b92a951c7ac008faa0084d9aac8f775] domain: support inserting ru historical data into mysql.request_unit_by_group periodically (#49873)
+git bisect good a1fd1bee0b92a951c7ac008faa0084d9aac8f775
+# bad: [617eb0a5d601f0b7e9541e4283e5f2015772dc42] planner: support global binding fuzzy matching (#50085)
+git bisect bad 617eb0a5d601f0b7e9541e4283e5f2015772dc42
+# good: [62c83d40fe2ed742bfaf4b7c64eca0bb1853a94d] bindinfo: extract the table hint from the union statement (#50070)
+git bisect good 62c83d40fe2ed742bfaf4b7c64eca0bb1853a94d
+# first bad commit: [617eb0a5d601f0b7e9541e4283e5f2015772dc42] planner: support global binding fuzzy matching (#50085)
+Previous HEAD position was 62c83d40fe bindinfo: extract the table hint from the union statement (#50070)

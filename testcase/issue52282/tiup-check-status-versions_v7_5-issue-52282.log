@@ -1,0 +1,3 @@
+Start to analyze regression behavior among releases for issue 52282
+Version v7.5.0 : Failure
+Version v7.5.1 : Failure

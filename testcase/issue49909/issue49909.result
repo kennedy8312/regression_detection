@@ -1,0 +1,1 @@
+ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.

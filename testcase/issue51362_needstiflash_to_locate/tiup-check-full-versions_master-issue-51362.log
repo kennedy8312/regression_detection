@@ -1,0 +1,777 @@
+Start to analyze regression behavior among releases for issue 51362
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v5.4.0-----------------
+Server on v5.4.0 started.
+Validation passed. v5.4.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v5.4.0
+Edition: Community
+Git Commit Hash: 55f3b24c1c9f506bd652ef1d162283541e428872
+Git Branch: heads/refs/tags/v5.4.0
+UTC Build Time: 2022-01-25 08:41:03
+GoVersion: go1.16.4
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on v5.4.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.0.0-----------------
+Server on v6.0.0 started.
+Validation passed. v6.0.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.0.0
+Edition: Community
+Git Commit Hash: 36a9810441ca0e496cbd22064af274b3be771081
+Git Branch: heads/refs/tags/v6.0.0
+UTC Build Time: 2022-03-31 10:27:58
+GoVersion: go1.18
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on v6.0.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.1.0-----------------
+Server on v6.1.0 started.
+Validation passed. v6.1.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.1.0
+Edition: Community
+Git Commit Hash: 1a89decdb192cbdce6a7b0020d71128bc964d30f
+Git Branch: heads/refs/tags/v6.1.0
+UTC Build Time: 2022-06-05 05:09:33
+GoVersion: go1.18.2
+Race Enabled: false
+TiKV Min Version: v3.0.0-60965b006877ca7234adaced7890d7b029ed1306
+Check Table Before Drop: false
+
+-----------------End of regression test on v6.1.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.2.0-----------------
+Server on v6.2.0 started.
+Validation passed. v6.2.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.2.0
+Edition: Community
+Git Commit Hash: daf2b17cdfe30c02ce282361009fb5bdb05f2b0e
+Git Branch: heads/refs/tags/v6.2.0
+UTC Build Time: 2022-08-22 13:38:40
+GoVersion: go1.18.5
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.2.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.3.0-----------------
+Server on v6.3.0 started.
+Validation passed. v6.3.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.3.0
+Edition: Community
+Git Commit Hash: ecd67531f1721d3e49eb15a202ac7c0ae02291ec
+Git Branch: heads/refs/tags/v6.3.0
+UTC Build Time: 2022-09-23 14:21:08
+GoVersion: go1.19.1
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.3.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.4.0-----------------
+Server on v6.4.0 started.
+Validation passed. v6.4.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.4.0
+Edition: Community
+Git Commit Hash: cf36a9ce2fe1039db3cf3444d51930b887df18a1
+Git Branch: heads/refs/tags/v6.4.0
+UTC Build Time: 2022-11-13 05:15:45
+GoVersion: go1.19
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.4.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.5.0-----------------
+Server on v6.5.0 started.
+Validation passed. v6.5.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.5.0
+Edition: Community
+Git Commit Hash: 706c3fa3c526cdba5b3e9f066b1a568fb96c56e3
+Git Branch: heads/refs/tags/v6.5.0
+UTC Build Time: 2022-12-27 03:42:38
+GoVersion: go1.19.3
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.5.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v6.6.0-----------------
+Server on v6.6.0 started.
+Validation passed. v6.6.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0
+Edition: Community
+Git Commit Hash: f4ca0821fb96a2bdd37d2fb97eb26c07fc58d4e4
+Git Branch: heads/refs/tags/v6.6.0
+UTC Build Time: 2023-02-17 14:39:38
+GoVersion: go1.19.5
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v6.6.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.0.0-----------------
+Server on v7.0.0 started.
+Validation passed. v7.0.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.0.0
+Edition: Community
+Git Commit Hash: 7376954cd868dbc44fc3015c9ef89c53749339a7
+Git Branch: heads/refs/tags/v7.0.0
+UTC Build Time: 2023-03-29 13:22:40
+GoVersion: go1.20.2
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.0.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.0-----------------
+Server on v7.1.0 started.
+Validation passed. v7.1.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.0
+Edition: Community
+Git Commit Hash: 635a4362235e8a3c0043542e629532e3c7bb2756
+Git Branch: heads/refs/tags/v7.1.0
+UTC Build Time: 2023-05-30 10:50:03
+GoVersion: go1.20.3
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.2.0-----------------
+Server on v7.2.0 started.
+Validation passed. v7.2.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0
+Edition: Community
+Git Commit Hash: 9fd5f4a8e4f273a60fbe7d3848f85a1be8f0600b
+Git Branch: heads/refs/tags/v7.2.0
+UTC Build Time: 2023-06-27 14:56:57
+GoVersion: go1.20.5
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.2.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.3.0-----------------
+Server on v7.3.0 started.
+Validation failed at run 1. v7.3.0 is a bad label.
+Expected: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+Actual: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.3.0
+Edition: Community
+Git Commit Hash: 40b72e7a9a4fc9670d4c5d974dd503a3c6097471
+Git Branch: heads/refs/tags/v7.3.0
+UTC Build Time: 2023-08-08 09:27:28
+GoVersion: go1.20.7
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.3.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.4.0-----------------
+Server on v7.4.0 started.
+Validation failed at run 1. v7.4.0 is a bad label.
+Expected: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+Actual: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0
+Edition: Community
+Git Commit Hash: 38cb4f3312be9199a983c0ef282d2ea2e28a7824
+Git Branch: heads/refs/tags/v7.4.0
+UTC Build Time: 2023-10-10 14:10:02
+GoVersion: go1.21.0
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.4.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.5.0-----------------
+Server on v7.5.0 started.
+Validation failed at run 1. v7.5.0 is a bad label.
+Expected: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+Actual: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.0
+Edition: Community
+Git Commit Hash: 069631e2ecfedc000ffb92c67207bea81380f020
+Git Branch: heads/refs/tags/v7.5.0
+UTC Build Time: 2023-11-24 08:41:10
+GoVersion: go1.21.3
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.5.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.6.0-----------------
+Server on v7.6.0 started.
+Validation failed at run 1. v7.6.0 is a bad label.
+Expected: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+Actual: 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51362_testcase.sql
+issue51362_testcase.sql: 
+drop table if exists `t`;
+
+create table `t` (
+  d date,
+  v int,
+  primary key(d, v)
+) partition by range columns (d) (
+  partition p1 values less than ('2023-07-02'),
+  partition p2 values less than ('2023-07-03')
+);
+
+alter table t set tiflash replica 1;
+set tidb_partition_prune_mode='static';
+select sleep(30);
+select TABLE_SCHEMA,TABLE_NAME,REPLICA_COUNT,LOCATION_LABELS,AVAILABLE,PROGRESS from information_schema.tiflash_replica; -- wait until the replication progress finish
+
+select 1 from (
+  select /*+ read_from_storage(tiflash[t]) */ sum(1)
+  from t where d BETWEEN '2023-07-01' and '2023-07-03' group by d
+) total;
+-----------------Test Result-----------------
+Result : 
+sleep(30)
+0
+TABLE_SCHEMA	TABLE_NAME	REPLICA_COUNT	LOCATION_LABELS	AVAILABLE	PROGRESS
+test	t	1		1	1
+ERROR 1105 (HY000) at line 17: other error for mpp stream: Code: 0, e.displayText() = DB::TiFlashException: Different aggregation mode detected, e.what() = DB::TiFlashException,
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0
+Edition: Community
+Git Commit Hash: 52794d985ba6325d75a714d4eaa0838d59425eb6
+Git Branch: heads/refs/tags/v7.6.0
+UTC Build Time: 2024-01-22 14:13:53
+GoVersion: go1.21.5
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.6.0-----------------
+----------------------------------------------------------------------
+Timeout: Failed to start TiDB Playground Cluster for version: v8.0.0

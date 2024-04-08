@@ -1,0 +1,38 @@
+Start to detect regression causing commit for issue 52282
+Commit 6701bf1527c7386a82396a1ecfb5322872daa2b3 : Success
+Commit 8e2e149ac8616f5231651a4d32fd5bbc0ca29b8d : Success
+Commit 6ec70f17b5651c49229dfd81b23ce7fedb4313a7 : Success
+Commit 954592375dc8189e59ca92bd17f366d4b4c3f2aa : Success
+Commit cbd41115f32b8f49c105473cc65291cdc8d26da6 : Success
+Commit 24524439112106be61d1cfdb94cc945f8202ebcd : Success
+Commit e359ebd0fcd22e7cb65b88fcc841ae14e880f3cc : Success
+Commit d4ef3b269e51e05688d76ef11ea36ccde51febad : Success
+Commit 90e115f80bbb94ce74937a9fed826865af8438ae : Success
+Commit 43cf9a2245b91c647b46816ad3d5424ef90f1070 : Failure
+Commit c5dc6c5659118b8dde633f73f8f6760400ddca88 : Success
+# bad: [8ba1fa452b1ccdbfb85879ea94b9254aabba2916] planner: Fix issue 52198, HandleColOffset was wrong. (#52210) (#52213)
+# good: [52794d985ba6325d75a714d4eaa0838d59425eb6] executor: use analyze scan concurrency to control index analyze (#50639) (#50642)
+git bisect start 'v8.0.0' 'v7.6.0'
+# good: [6701bf1527c7386a82396a1ecfb5322872daa2b3] ddl: create table accelerate (#49687)
+git bisect good 6701bf1527c7386a82396a1ecfb5322872daa2b3
+# good: [8e2e149ac8616f5231651a4d32fd5bbc0ca29b8d] planner: fix typos and add more comments (#51192)
+git bisect good 8e2e149ac8616f5231651a4d32fd5bbc0ca29b8d
+# good: [6ec70f17b5651c49229dfd81b23ce7fedb4313a7] bootstrap: Modify column sizes in constant.go and bootstrap.go (#51457)
+git bisect good 6ec70f17b5651c49229dfd81b23ce7fedb4313a7
+# good: [954592375dc8189e59ca92bd17f366d4b4c3f2aa] log: Support a dedicated log file to save general log (#51249)
+git bisect good 954592375dc8189e59ca92bd17f366d4b4c3f2aa
+# good: [cbd41115f32b8f49c105473cc65291cdc8d26da6] br: skip loading stats into memory if set `--load-stats` to false (#51535)
+git bisect good cbd41115f32b8f49c105473cc65291cdc8d26da6
+# good: [24524439112106be61d1cfdb94cc945f8202ebcd] external: make global sort `common.Range` unencoded (#51900) (#51969)
+git bisect good 24524439112106be61d1cfdb94cc945f8202ebcd
+# good: [e359ebd0fcd22e7cb65b88fcc841ae14e880f3cc] br: revise tidb-lightning.toml for conflict detection (#52033) (#52044)
+git bisect good e359ebd0fcd22e7cb65b88fcc841ae14e880f3cc
+# good: [d4ef3b269e51e05688d76ef11ea36ccde51febad] restore: use a limited workpool (#51872) (#52110)
+git bisect good d4ef3b269e51e05688d76ef11ea36ccde51febad
+# good: [90e115f80bbb94ce74937a9fed826865af8438ae] ddl: fix add multi-indexes merge on partition tables (#52109) (#52118)
+git bisect good 90e115f80bbb94ce74937a9fed826865af8438ae
+# bad: [43cf9a2245b91c647b46816ad3d5424ef90f1070] planner: apply rule_partition_pruning when optimizing CTE under static mode (#51903) (#52148)
+git bisect bad 43cf9a2245b91c647b46816ad3d5424ef90f1070
+# good: [c5dc6c5659118b8dde633f73f8f6760400ddca88] br: change default value to coarse-grained (#52120) (#52121)
+git bisect good c5dc6c5659118b8dde633f73f8f6760400ddca88
+# first bad commit: [43cf9a2245b91c647b46816ad3d5424ef90f1070] planner: apply rule_partition_pruning when optimizing CTE under static mode (#51903) (#52148)

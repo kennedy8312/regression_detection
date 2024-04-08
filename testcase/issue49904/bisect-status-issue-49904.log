@@ -1,0 +1,29 @@
+
+Commit 824f43408fdfd168bdd7cea39d472d6b64dd13ca : Success
+Commit c4fbc8e4afa9493789109247e609912e53b7db3e : Success
+Commit 0e0243c1e03289bb85838dd25933bfb8a8f13134 : Failure
+Commit 4cb1b94cc7525017996770ddb6a6b25e25c26344 : Failure
+Commit 95a346cb2deb803988f18efe141db6e90e704329 : Failure
+Commit 46c43febcac0e24bc9f0872e93cf6125db69d93d : Success
+Commit f12ad1e6ca7169f87ba1ae382ddfdf599edb3973 : Failure
+Commit 47e4b5bf312aa9219f2589145c4e145590e0785f : Failure
+# bad: [36a9810441ca0e496cbd22064af274b3be771081] planner: fix CTE predicate pushdown (#33627) (#33630)
+# good: [74d74b0a7b6bee275d392199bb319859682627ff] session: fix global sysdate_is_now won't work (#32785)
+git bisect start 'v6.0.0' 'v6.0.0-alpha'
+# good: [824f43408fdfd168bdd7cea39d472d6b64dd13ca] statistics: add a more accurate upper bound to exponential backoff estimation strategy (#32848)
+git bisect good 824f43408fdfd168bdd7cea39d472d6b64dd13ca
+# good: [c4fbc8e4afa9493789109247e609912e53b7db3e] ddl: migrate test-infra to testify for ddl.testDBSuite5 (#33157)
+git bisect good c4fbc8e4afa9493789109247e609912e53b7db3e
+# bad: [0e0243c1e03289bb85838dd25933bfb8a8f13134] main: fix `@@hostname` always returns `localhost` (#33064)
+git bisect bad 0e0243c1e03289bb85838dd25933bfb8a8f13134
+# bad: [4cb1b94cc7525017996770ddb6a6b25e25c26344] bootstrap: correctly increment the bootstrap version (#33184)
+git bisect bad 4cb1b94cc7525017996770ddb6a6b25e25c26344
+# bad: [95a346cb2deb803988f18efe141db6e90e704329] sysvar: re-organize the order of sysvars by their scopes. (#33149)
+git bisect bad 95a346cb2deb803988f18efe141db6e90e704329
+# good: [46c43febcac0e24bc9f0872e93cf6125db69d93d] parser: add RemovePlacementRuleFlag (#33161)
+git bisect good 46c43febcac0e24bc9f0872e93cf6125db69d93d
+# bad: [f12ad1e6ca7169f87ba1ae382ddfdf599edb3973] executor: fix CTE may be blocked when query report error (#33085)
+git bisect bad f12ad1e6ca7169f87ba1ae382ddfdf599edb3973
+# bad: [47e4b5bf312aa9219f2589145c4e145590e0785f] *: revert #27021 to fix a bug that selection can not be pushed down when having clause above aggregation (#33168)
+git bisect bad 47e4b5bf312aa9219f2589145c4e145590e0785f
+# first bad commit: [47e4b5bf312aa9219f2589145c4e145590e0785f] *: revert #27021 to fix a bug that selection can not be pushed down when having clause above aggregation (#33168)

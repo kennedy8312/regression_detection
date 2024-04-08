@@ -1,0 +1,1 @@
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []

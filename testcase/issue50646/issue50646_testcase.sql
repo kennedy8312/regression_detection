@@ -1,0 +1,11 @@
+drop database if exists TICASE;
+create database TICASE;
+use TICASE;
+delete from mysql.bind_info;
+drop table if exists t, t1;
+create table t(a int, b int, index idx(a));
+create table t1(a int, b int, index idx(a));
+insert into t values(1,1), (2,2), (3,3), (4, 4), (5,5);
+insert into t1 values(1,-1),(2,-2), (3,-3), (4,-4), (5, -5);
+create global binding for delete t, t1 from t use index(idx) join t1 use index(idx) on t.a=t1.a using delete /*+ merge_join(t) */ t, t1 from t use index(idx) join t1 use index(idx) on t.a=t1.a;
+explain delete /*+ inl_merge_join(t) */ t, t1 from t ignore index(idx) join t1 ignore index(idx) on t.a=t1.a;

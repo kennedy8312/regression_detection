@@ -1,0 +1,342 @@
+
+Bisecting: a merge base must be tested
+[426671e91adc7bfafe9918bd28e88d374f77d68f] planner, sessionctx: enable late materialization in disaggregated TiFlash (#43068)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.1.0-alpha-287-g426671e91a-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:36:28" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=426671e91adc7bfafe9918bd28e88d374f77d68f" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 426671e91adc7bfafe9918bd28e88d374f77d68f-----------------
+Server on 426671e91adc7bfafe9918bd28e88d374f77d68f started.
+Validation passed. 426671e91adc7bfafe9918bd28e88d374f77d68f is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.0-alpha-287-g426671e91a-dirty
+Edition: Community
+Git Commit Hash: 426671e91adc7bfafe9918bd28e88d374f77d68f
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:36:28
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 426671e91adc7bfafe9918bd28e88d374f77d68f-----------------
+----------------------------------------------------------------------
+Bisecting: 250 revisions left to test after this (roughly 8 steps)
+[87c64bf7c3a6a22949c61ce3a988009de5ea20e7] br : a new flag to enable ebs br cross az restore (#43962)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-230-g87c64bf7c3-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:37:23" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=87c64bf7c3a6a22949c61ce3a988009de5ea20e7" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 87c64bf7c3a6a22949c61ce3a988009de5ea20e7-----------------
+Server on 87c64bf7c3a6a22949c61ce3a988009de5ea20e7 started.
+Validation passed. 87c64bf7c3a6a22949c61ce3a988009de5ea20e7 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-230-g87c64bf7c3-dirty
+Edition: Community
+Git Commit Hash: 87c64bf7c3a6a22949c61ce3a988009de5ea20e7
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:37:23
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 87c64bf7c3a6a22949c61ce3a988009de5ea20e7-----------------
+----------------------------------------------------------------------
+Bisecting: 125 revisions left to test after this (roughly 7 steps)
+[e528195120b21bbe6947b0fbe31e6f2a24f24c23] table/tables: get temp index value from storage regardless of lazy check (#44452)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-355-ge528195120-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:38:21" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=e528195120b21bbe6947b0fbe31e6f2a24f24c23" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on e528195120b21bbe6947b0fbe31e6f2a24f24c23-----------------
+Server on e528195120b21bbe6947b0fbe31e6f2a24f24c23 started.
+Validation passed. e528195120b21bbe6947b0fbe31e6f2a24f24c23 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-355-ge528195120-dirty
+Edition: Community
+Git Commit Hash: e528195120b21bbe6947b0fbe31e6f2a24f24c23
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:38:21
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on e528195120b21bbe6947b0fbe31e6f2a24f24c23-----------------
+----------------------------------------------------------------------
+Bisecting: 62 revisions left to test after this (roughly 6 steps)
+[626e3a55224190c9931dfc2b7bc2d6a736337218] linter: enable revive for part planner/core (#44662)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-418-g626e3a5522-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:39:19" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=626e3a55224190c9931dfc2b7bc2d6a736337218" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 626e3a55224190c9931dfc2b7bc2d6a736337218-----------------
+Server on 626e3a55224190c9931dfc2b7bc2d6a736337218 started.
+Validation failed at run 1. 626e3a55224190c9931dfc2b7bc2d6a736337218 is a bad label. Expected: ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.. Actual: 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-418-g626e3a5522-dirty
+Edition: Community
+Git Commit Hash: 626e3a55224190c9931dfc2b7bc2d6a736337218
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:39:19
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 626e3a55224190c9931dfc2b7bc2d6a736337218-----------------
+----------------------------------------------------------------------
+Bisecting: 31 revisions left to test after this (roughly 5 steps)
+[b40cb427f265890858763bb450e5d98e8b822c1e] extension: update submodule (#44580)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-386-gb40cb427f2-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:40:16" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=b40cb427f265890858763bb450e5d98e8b822c1e" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on b40cb427f265890858763bb450e5d98e8b822c1e-----------------
+Server on b40cb427f265890858763bb450e5d98e8b822c1e started.
+Validation failed at run 1. b40cb427f265890858763bb450e5d98e8b822c1e is a bad label. Expected: ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.. Actual: 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-386-gb40cb427f2-dirty
+Edition: Community
+Git Commit Hash: b40cb427f265890858763bb450e5d98e8b822c1e
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:40:16
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on b40cb427f265890858763bb450e5d98e8b822c1e-----------------
+----------------------------------------------------------------------
+Bisecting: 15 revisions left to test after this (roughly 4 steps)
+[29dffb7591f5ef225d458d2248a64dcc13e4fd7f] disttask: Refine dispatcher (#44482)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-370-g29dffb7591-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:41:11" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=29dffb7591f5ef225d458d2248a64dcc13e4fd7f" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 29dffb7591f5ef225d458d2248a64dcc13e4fd7f-----------------
+Server on 29dffb7591f5ef225d458d2248a64dcc13e4fd7f started.
+Validation failed at run 1. 29dffb7591f5ef225d458d2248a64dcc13e4fd7f is a bad label. Expected: ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.. Actual: 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-370-g29dffb7591-dirty
+Edition: Community
+Git Commit Hash: 29dffb7591f5ef225d458d2248a64dcc13e4fd7f
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:41:11
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 29dffb7591f5ef225d458d2248a64dcc13e4fd7f-----------------
+----------------------------------------------------------------------
+Bisecting: 7 revisions left to test after this (roughly 3 steps)
+[6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0] lightning: add error message for pre-deduplication (#44317)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-362-g6bab55cfeb-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:42:07" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0-----------------
+Server on 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0 started.
+Validation failed at run 1. 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0 is a bad label. Expected: ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.. Actual: 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-362-g6bab55cfeb-dirty
+Edition: Community
+Git Commit Hash: 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:42:07
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 6bab55cfeb85bcb0532fe5afb52ca1fd9eeedde0-----------------
+----------------------------------------------------------------------
+Bisecting: 3 revisions left to test after this (roughly 2 steps)
+[bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025] lightning: deprecate send-kv-pairs (#44463)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-358-gbc45bdf3c0-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:42:48" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025-----------------
+Server on bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025 started.
+Validation passed. bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-358-gbc45bdf3c0-dirty
+Edition: Community
+Git Commit Hash: bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:42:48
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on bc45bdf3c0e51e3a33ab08913bd7d3631bb0f025-----------------
+----------------------------------------------------------------------
+Bisecting: 1 revision left to test after this (roughly 1 step)
+[8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878] *: support check constraint in tidb (#44104)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-360-g8b67cea5e1-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:43:21" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878-----------------
+Server on 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878 started.
+Validation passed. 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-360-g8b67cea5e1-dirty
+Edition: Community
+Git Commit Hash: 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:43:21
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 8b67cea5e12f2edbfd7c4ce4b3a1038aea41e878-----------------
+----------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[aedbcd085bb4ea5777699eac7d25dfd42222b8e5] expression: refactor grouping function computation and update related tipb (#44436)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue49909/issue49909.result' '/Users/yichenhan/workload/regression_detection/issue49909' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue49909/bisect-status-issue-49909.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.2.0-alpha-361-gaedbcd085b-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 06:44:13" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=aedbcd085bb4ea5777699eac7d25dfd42222b8e5" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on aedbcd085bb4ea5777699eac7d25dfd42222b8e5-----------------
+Server on aedbcd085bb4ea5777699eac7d25dfd42222b8e5 started.
+Validation failed at run 1. aedbcd085bb4ea5777699eac7d25dfd42222b8e5 is a bad label. Expected: ERROR 3102 (HY000) at line 2: Expression of generated column 'b' contains a disallowed function.. Actual: 
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue49909_testcase.sql
+issue49909_testcase.sql: 
+drop table if exists t;
+create table t(a int, b int as ((grouping(a))) stored);
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.2.0-alpha-361-gaedbcd085b-dirty
+Edition: Community
+Git Commit Hash: aedbcd085bb4ea5777699eac7d25dfd42222b8e5
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 06:44:13
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on aedbcd085bb4ea5777699eac7d25dfd42222b8e5-----------------
+----------------------------------------------------------------------
+aedbcd085bb4ea5777699eac7d25dfd42222b8e5 is the first bad commit
+commit aedbcd085bb4ea5777699eac7d25dfd42222b8e5
+Author: Arenatlx <314806019@qq.com>
+Date:   Wed Jun 7 18:19:41 2023 +0800
+
+    expression: refactor grouping function computation and update related tipb (#44436)
+    
+    close pingcap/tidb#44437
+
+ DEPS.bzl                            |   4 +-
+ executor/test/showtest/show_test.go |   2 +-
+ expression/builtin.go               |   1 +
+ expression/builtin_grouping.go      | 121 ++++++++++++++++++++++++------------
+ expression/builtin_grouping_test.go |  34 +++++-----
+ go.mod                              |   2 +-
+ go.sum                              |   4 +-
+ parser/ast/functions.go             |   1 +
+ 8 files changed, 106 insertions(+), 63 deletions(-)
+bisect found first bad commit

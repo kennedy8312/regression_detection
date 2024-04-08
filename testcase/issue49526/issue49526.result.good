@@ -1,0 +1,10 @@
+id	estRows	task	access object	operator info
+Sort_9	2.00	root		Column#3
+└─Union_11	2.00	root		
+  ├─Projection_13	1.00	root		<nil>->Column#3
+  │ └─TableDual_14	1.00	root		rows:1
+  └─Projection_15	1.00	root		a->Column#3
+    └─TableDual_16	1.00	root		rows:1
+a
+NULL
+a

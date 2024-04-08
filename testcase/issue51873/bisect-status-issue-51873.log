@@ -1,0 +1,35 @@
+
+Commit 121a6669a85cdb8da942de466d42d5dfdecc0b7d : Success
+Commit b690f1ceadabedb7e5ae1ad4380a71062d1b4b2e : Success
+Commit e0b5fa108544276068b3a7f097e137fd4cedd547 : Success
+Commit fae88ae56119b2289801db4bd69f304e34e924f3 : Failure
+Commit 1685a714d4229c2b8c92e9f30a16c627bc941e7f : Success
+Commit 6261eb3f857895f2a01eb74a74e1d1f85615bfaf : Success
+Commit f0d8d47df59ff2d7e843544573a23489e84992a9 : Success
+Commit f78c148e022040405bf504132ef2f875864236ea : Failure
+Commit 13ac51047438f97e412efd6232a650038a6facfc : Success
+Commit c646842f2926b38c96bf05350033cce53fbce4ba : Failure
+# bad: [ecd67531f1721d3e49eb15a202ac7c0ae02291ec] util: a tiny update of license comment (#38135)
+# good: [daf2b17cdfe30c02ce282361009fb5bdb05f2b0e] planner: set EnableOuterJoinReorder to false by default (#37264) (#37281)
+git bisect start 'v6.3.0' 'v6.2.0'
+# good: [121a6669a85cdb8da942de466d42d5dfdecc0b7d] ddl: invalid multiple MAXVALUE partitions (#36329) (#36345)
+git bisect good 121a6669a85cdb8da942de466d42d5dfdecc0b7d
+# good: [b690f1ceadabedb7e5ae1ad4380a71062d1b4b2e] dumpling: fix wrong behaviour of StrictCollationCompatible (#37243)
+git bisect good b690f1ceadabedb7e5ae1ad4380a71062d1b4b2e
+# good: [e0b5fa108544276068b3a7f097e137fd4cedd547] planner: Expression memory trace (#37624)
+git bisect good e0b5fa108544276068b3a7f097e137fd4cedd547
+# bad: [fae88ae56119b2289801db4bd69f304e34e924f3] log-backup: refuse PiTR if the full-snapshot and stream-log do not come from the same cluster (#37546)
+git bisect bad fae88ae56119b2289801db4bd69f304e34e924f3
+# good: [1685a714d4229c2b8c92e9f30a16c627bc941e7f] expression: set correct json storage size (#37661)
+git bisect good 1685a714d4229c2b8c92e9f30a16c627bc941e7f
+# good: [6261eb3f857895f2a01eb74a74e1d1f85615bfaf] feat: Implement Space function push down to TiFlash  (#35753)
+git bisect good 6261eb3f857895f2a01eb74a74e1d1f85615bfaf
+# good: [f0d8d47df59ff2d7e843544573a23489e84992a9] telemetry: interval partitioning (#36486)
+git bisect good f0d8d47df59ff2d7e843544573a23489e84992a9
+# bad: [f78c148e022040405bf504132ef2f875864236ea] txn: forbid savepoint when lazy uniqueness check is enabled (#37817)
+git bisect bad f78c148e022040405bf504132ef2f875864236ea
+# good: [13ac51047438f97e412efd6232a650038a6facfc] *: change flashback grammar to `flashback cluster to timestamp` (#37815)
+git bisect good 13ac51047438f97e412efd6232a650038a6facfc
+# bad: [c646842f2926b38c96bf05350033cce53fbce4ba] sessionctx: Change default tidb_partition_prune_mode from static to dynamic (#37712)
+git bisect bad c646842f2926b38c96bf05350033cce53fbce4ba
+# first bad commit: [c646842f2926b38c96bf05350033cce53fbce4ba] sessionctx: Change default tidb_partition_prune_mode from static to dynamic (#37712)

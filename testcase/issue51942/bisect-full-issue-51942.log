@@ -1,0 +1,434 @@
+
+Bisecting: a merge base must be tested
+[6701bf1527c7386a82396a1ecfb5322872daa2b3] ddl: create table accelerate (#49687)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v7.6.0-alpha-703-g6701bf1527-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:20:16" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=6701bf1527c7386a82396a1ecfb5322872daa2b3" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 6701bf1527c7386a82396a1ecfb5322872daa2b3-----------------
+Server on 6701bf1527c7386a82396a1ecfb5322872daa2b3 started.
+Validation passed. 6701bf1527c7386a82396a1ecfb5322872daa2b3 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.6.0-alpha-703-g6701bf1527-dirty
+Edition: Community
+Git Commit Hash: 6701bf1527c7386a82396a1ecfb5322872daa2b3
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:20:16
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 6701bf1527c7386a82396a1ecfb5322872daa2b3-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 309 revisions left to test after this (roughly 8 steps)
+[c3c067eb9334ba75d59e9712f0c21b378ffeca5e] ddl: split range group for each index separately for global sort import (#50658)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-257-gc3c067eb93-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:21:01" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=c3c067eb9334ba75d59e9712f0c21b378ffeca5e" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on c3c067eb9334ba75d59e9712f0c21b378ffeca5e-----------------
+Server on c3c067eb9334ba75d59e9712f0c21b378ffeca5e started.
+Validation passed. c3c067eb9334ba75d59e9712f0c21b378ffeca5e is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-257-gc3c067eb93-dirty
+Edition: Community
+Git Commit Hash: c3c067eb9334ba75d59e9712f0c21b378ffeca5e
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:21:01
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on c3c067eb9334ba75d59e9712f0c21b378ffeca5e-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 154 revisions left to test after this (roughly 7 steps)
+[a8a9a040774dea10c956c6cc10bde57142bf7298] * : delete unuse interface and implementation (#51552)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-412-ga8a9a04077-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:22:08" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=a8a9a040774dea10c956c6cc10bde57142bf7298" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+go: downloading github.com/tikv/client-go/v2 v2.0.8-0.20240305085506-3625fc04d0bd
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on a8a9a040774dea10c956c6cc10bde57142bf7298-----------------
+Server on a8a9a040774dea10c956c6cc10bde57142bf7298 started.
+Validation failed at run 1. a8a9a040774dea10c956c6cc10bde57142bf7298 is a bad label.
+Expected: 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+Actual: 
+table_rows	avg_row_length	data_length	index_length
+0	0	0	0
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+0	0	0	0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-412-ga8a9a04077-dirty
+Edition: Community
+Git Commit Hash: a8a9a040774dea10c956c6cc10bde57142bf7298
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:22:08
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on a8a9a040774dea10c956c6cc10bde57142bf7298-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 77 revisions left to test after this (roughly 6 steps)
+[a59551b701704ec2b3d33dc1299ea6c75c34acb8] ddl: rename tidb_ddl_version to tidb_enable_fast_create_table (#51047)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-334-ga59551b701-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:23:10" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=a59551b701704ec2b3d33dc1299ea6c75c34acb8" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+go: downloading github.com/tikv/client-go/v2 v2.0.8-0.20240223022444-8d28d3cd3a10
+go: downloading github.com/pingcap/kvproto v0.0.0-20240206021635-05a3758a1d24
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on a59551b701704ec2b3d33dc1299ea6c75c34acb8-----------------
+Server on a59551b701704ec2b3d33dc1299ea6c75c34acb8 started.
+Validation failed at run 1. a59551b701704ec2b3d33dc1299ea6c75c34acb8 is a bad label.
+Expected: 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+Actual: 
+table_rows	avg_row_length	data_length	index_length
+0	0	0	0
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+0	0	0	0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-334-ga59551b701-dirty
+Edition: Community
+Git Commit Hash: a59551b701704ec2b3d33dc1299ea6c75c34acb8
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:23:10
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on a59551b701704ec2b3d33dc1299ea6c75c34acb8-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 38 revisions left to test after this (roughly 5 steps)
+[1678c4fa25dbe888582b10132edd4899a1203f41] build(deps): bump github.com/prometheus/client_model from 0.5.0 to 0.6.0 (#51264)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-295-g1678c4fa25-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:24:11" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=1678c4fa25dbe888582b10132edd4899a1203f41" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 1678c4fa25dbe888582b10132edd4899a1203f41-----------------
+Server on 1678c4fa25dbe888582b10132edd4899a1203f41 started.
+Validation passed. 1678c4fa25dbe888582b10132edd4899a1203f41 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-295-g1678c4fa25-dirty
+Edition: Community
+Git Commit Hash: 1678c4fa25dbe888582b10132edd4899a1203f41
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:24:11
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 1678c4fa25dbe888582b10132edd4899a1203f41-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 19 revisions left to test after this (roughly 4 steps)
+[0df9170791401b31539a40000ecb0739e7a43283] planner/infoschema: support push down lower to some memtables (#50874)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-314-g0df9170791-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:25:06" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=0df9170791401b31539a40000ecb0739e7a43283" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 0df9170791401b31539a40000ecb0739e7a43283-----------------
+Server on 0df9170791401b31539a40000ecb0739e7a43283 started.
+Validation failed at run 1. 0df9170791401b31539a40000ecb0739e7a43283 is a bad label.
+Expected: 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+Actual: 
+table_rows	avg_row_length	data_length	index_length
+0	0	0	0
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+0	0	0	0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-314-g0df9170791-dirty
+Edition: Community
+Git Commit Hash: 0df9170791401b31539a40000ecb0739e7a43283
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:25:06
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 0df9170791401b31539a40000ecb0739e7a43283-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 9 revisions left to test after this (roughly 3 steps)
+[6af4bbaabbbcbd50689d18b8d88b96194270b3e2] planner, executor: enhance the index join's choice (#51128)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-304-g6af4bbaabb-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:25:49" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=6af4bbaabbbcbd50689d18b8d88b96194270b3e2" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 6af4bbaabbbcbd50689d18b8d88b96194270b3e2-----------------
+Server on 6af4bbaabbbcbd50689d18b8d88b96194270b3e2 started.
+Validation passed. 6af4bbaabbbcbd50689d18b8d88b96194270b3e2 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-304-g6af4bbaabb-dirty
+Edition: Community
+Git Commit Hash: 6af4bbaabbbcbd50689d18b8d88b96194270b3e2
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:25:49
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 6af4bbaabbbcbd50689d18b8d88b96194270b3e2-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 4 revisions left to test after this (roughly 2 steps)
+[f4e758a89daa73f846dbe40787b07d1bd2b0742e] statistics: build the table analysis job queue part2 (#51152)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-309-gf4e758a89d-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:26:32" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=f4e758a89daa73f846dbe40787b07d1bd2b0742e" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on f4e758a89daa73f846dbe40787b07d1bd2b0742e-----------------
+Server on f4e758a89daa73f846dbe40787b07d1bd2b0742e started.
+Validation passed. f4e758a89daa73f846dbe40787b07d1bd2b0742e is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-309-gf4e758a89d-dirty
+Edition: Community
+Git Commit Hash: f4e758a89daa73f846dbe40787b07d1bd2b0742e
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:26:32
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on f4e758a89daa73f846dbe40787b07d1bd2b0742e-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 2 revisions left to test after this (roughly 1 step)
+[3c3ba00cb40dee3b525fb22cb8ab33c52820acce] ddl: data type default values support `STR_TO_DATE('1980-01-01','%Y-%m-%d')` (#51278)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-311-g3c3ba00cb4-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:27:04" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=3c3ba00cb40dee3b525fb22cb8ab33c52820acce" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 3c3ba00cb40dee3b525fb22cb8ab33c52820acce-----------------
+Server on 3c3ba00cb40dee3b525fb22cb8ab33c52820acce started.
+Validation passed. 3c3ba00cb40dee3b525fb22cb8ab33c52820acce is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-311-g3c3ba00cb4-dirty
+Edition: Community
+Git Commit Hash: 3c3ba00cb40dee3b525fb22cb8ab33c52820acce
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:27:04
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 3c3ba00cb40dee3b525fb22cb8ab33c52820acce-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 1 step)
+[801de42a0e85270904bac297d8d42595b9175162] statistics: use correct last update version (#51287)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51942/issue51942.result' '/Users/yichenhan/workload/regression_detection/issue51942' '/Users/yichenhan/dummy/tidb' '10' '100' '/Users/yichenhan/workload/regression_detection/issue51942/bisect-status-issue-51942.log'
+CGO_ENABLED=1  GO111MODULE=on go build -tags codes  -ldflags '-X "github.com/pingcap/tidb/pkg/parser/mysql.TiDBReleaseVersion=v8.0.0-alpha-313-g801de42a0e-dirty" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBBuildTS=2024-03-20 09:27:48" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitHash=801de42a0e85270904bac297d8d42595b9175162" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/pkg/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./cmd/tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 801de42a0e85270904bac297d8d42595b9175162-----------------
+Server on 801de42a0e85270904bac297d8d42595b9175162 started.
+Validation passed. 801de42a0e85270904bac297d8d42595b9175162 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51942_testcase.sql
+issue51942_testcase.sql: 
+drop table if exists t;
+
+CREATE TABLE t (a int, b int, c varchar(5), primary key(a), index idx(c)) PARTITION BY RANGE (a) (PARTITION p0 VALUES LESS THAN (6), PARTITION p1 VALUES LESS THAN (11), PARTITION p2 VALUES LESS THAN (16));
+insert into t(a, b, c) values(1, 2, 'c'), (7, 3, 'd'), (12, 4, 'e');
+-- wait 20 * 3 to query the stats info 
+-- SELECT SLEEP(60);
+analyze table t;
+select table_rows, avg_row_length, data_length, index_length from information_schema.tables where table_name='t' AND TABLE_SCHEMA='test';
+-----------------Test Result-----------------
+Result : 
+table_rows	avg_row_length	data_length	index_length
+3	18	54	6
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v8.0.0-alpha-313-g801de42a0e-dirty
+Edition: Community
+Git Commit Hash: 801de42a0e85270904bac297d8d42595b9175162
+Git Branch: HEAD
+UTC Build Time: 2024-03-20 09:27:48
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 801de42a0e85270904bac297d8d42595b9175162-----------------
+--------------------------------------------------------------------------------------
+0df9170791401b31539a40000ecb0739e7a43283 is the first bad commit
+commit 0df9170791401b31539a40000ecb0739e7a43283
+Author: EasonBall <592838129@qq.com>
+Date:   Tue Feb 27 15:26:01 2024 +0800
+
+    planner/infoschema: support push down lower to some memtables (#50874)
+    
+    ref pingcap/tidb#50305
+
+ pkg/executor/infoschema_reader.go                  |  19 +--
+ pkg/planner/core/memtable_predicate_extractor.go   | 174 +++++++++++++++++++--
+ .../core/memtable_predicate_extractor_test.go      |  77 ++++++---
+ .../handle/cache/stats_table_row_cache.go          |  68 +++++---
+ pkg/util/set/string_set.go                         |  23 ++-
+ tests/integrationtest/r/executor/explainfor.result |   6 +
+ .../r/executor/infoschema_reader.result            |   6 +
+ .../integrationtest/r/infoschema/infoschema.result |  35 +++++
+ tests/integrationtest/t/executor/explainfor.test   |   3 +
+ .../t/executor/infoschema_reader.test              |   2 +
+ tests/integrationtest/t/infoschema/infoschema.test |  13 +-
+ 11 files changed, 356 insertions(+), 70 deletions(-)
+bisect found first bad commit

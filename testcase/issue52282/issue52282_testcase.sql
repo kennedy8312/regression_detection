@@ -1,0 +1,11 @@
+drop table if exists `t`;
+create table t (a int, b varchar(255), primary key (a)) partition by hash(a) partitions 2;
+insert into t values (1, '1'), (2, '2'), (3, '3');
+set @@tidb_partition_prune_mode='static';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='dynamic';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='static-only';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='dynamic-only';
+select * from t tablesample regions();

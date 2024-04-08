@@ -1,0 +1,176 @@
+Start to analyze regression behavior among releases for issue 51292
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.0-----------------
+Server on v7.1.0 started.
+Validation passed. v7.1.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.0
+Edition: Community
+Git Commit Hash: 635a4362235e8a3c0043542e629532e3c7bb2756
+Git Branch: heads/refs/tags/v7.1.0
+UTC Build Time: 2023-05-30 10:50:03
+GoVersion: go1.20.3
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.1-----------------
+Server on v7.1.1 started.
+Validation passed. v7.1.1 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.1
+Edition: Community
+Git Commit Hash: cf441574864be63938524e7dfcf7cc659edc3dd8
+Git Branch: heads/refs/tags/v7.1.1
+UTC Build Time: 2023-07-19 10:07:59
+GoVersion: go1.20.6
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.1-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.2-----------------
+Server on v7.1.2 started.
+Validation passed. v7.1.2 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.2
+Edition: Community
+Git Commit Hash: aa6ed99ae63191bc98e883fd4c369ae7482cccb7
+Git Branch: heads/refs/tags/v7.1.2
+UTC Build Time: 2023-10-21 07:38:05
+GoVersion: go1.20.10
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.2-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.3-----------------
+Server on v7.1.3 started.
+Validation passed. v7.1.3 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.3
+Edition: Community
+Git Commit Hash: aab2da047904901725e5a3bf745b47b1488eb8c7
+Git Branch: heads/refs/tags/v7.1.3
+UTC Build Time: 2023-12-18 13:16:19
+GoVersion: go1.20.12
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.3-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.1.4-----------------
+Server on v7.1.4 started.
+Validation passed. v7.1.4 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51292_testcase.sql
+issue51292_testcase.sql: 
+drop table if exists t0;
+CREATE TABLE t0(c0 DECIMAL ZEROFILL UNIQUE , c1 BOOL ZEROFILL AS (-1));
+INSERT IGNORE  INTO t0(c0) VALUES (NULL);
+CREATE INDEX i0 ON t0(c1 ASC, c0 DESC);
+SELECT t0.c1 FROM t0;
+SELECT t0.c1 FROM t0 WHERE (t0.c0 IS NULL);
+-----------------Test Result-----------------
+Result : 
+c1
+0
+c1
+0
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.1.4
+Edition: Community
+Git Commit Hash: a8b650f8372ede73b49dcc99289828c676075fb6
+Git Branch: heads/refs/tags/v7.1.4
+UTC Build Time: 2024-03-07 08:14:40
+GoVersion: go1.20.12
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.1.4-----------------
+----------------------------------------------------------------------

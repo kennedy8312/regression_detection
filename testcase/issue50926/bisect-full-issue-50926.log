@@ -1,0 +1,419 @@
+
+Already on 'master'
+Your branch is up to date with 'origin/master'.
+Bisecting: a merge base must be tested
+[4220dfa819525ba214396666daa5d2441236f29c] *: refine tikv/client-go log to print context information(such as conn id) as much as possible (#45559)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+rm: ./bin/tidb-server: No such file or directory
+rm: ./bin/tidb.log: No such file or directory
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.3.0-alpha-299-g4220dfa819-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:13:36" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=4220dfa819525ba214396666daa5d2441236f29c" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 4220dfa819525ba214396666daa5d2441236f29c-----------------
+Server on 4220dfa819525ba214396666daa5d2441236f29c started.
+Validation passed. 4220dfa819525ba214396666daa5d2441236f29c is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.3.0-alpha-299-g4220dfa819-dirty
+Edition: Community
+Git Commit Hash: 4220dfa819525ba214396666daa5d2441236f29c
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:13:36
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 285 revisions left to test after this (roughly 8 steps)
+[3036b6d2257a55d5ccf037b4de09a8b6f19704b7] importinto: support split large csv file (#46480)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-261-g3036b6d225-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:14:01" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=3036b6d2257a55d5ccf037b4de09a8b6f19704b7" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 3036b6d2257a55d5ccf037b4de09a8b6f19704b7-----------------
+Server on 3036b6d2257a55d5ccf037b4de09a8b6f19704b7 started.
+Validation failed at run 1. 3036b6d2257a55d5ccf037b4de09a8b6f19704b7 is a bad label. Expected: . Actual: ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-261-g3036b6d225-dirty
+Edition: Community
+Git Commit Hash: 3036b6d2257a55d5ccf037b4de09a8b6f19704b7
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:14:01
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 142 revisions left to test after this (roughly 7 steps)
+[cb8e85d88acc8087e99fd95bce53131965f19f75] planner: grouping function should be recreated with args, retType and metadata (#45848)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-118-gcb8e85d88a-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:14:23" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=cb8e85d88acc8087e99fd95bce53131965f19f75" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on cb8e85d88acc8087e99fd95bce53131965f19f75-----------------
+Server on cb8e85d88acc8087e99fd95bce53131965f19f75 started.
+Validation failed at run 1. cb8e85d88acc8087e99fd95bce53131965f19f75 is a bad label. Expected: . Actual: ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-118-gcb8e85d88a-dirty
+Edition: Community
+Git Commit Hash: cb8e85d88acc8087e99fd95bce53131965f19f75
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:14:23
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 71 revisions left to test after this (roughly 6 steps)
+[1567bb089786ca93b5e6384504433774c5e4de77] Makefile: add coverage report for `explaintest` (#45930)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-46-g1567bb0897-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:15:19" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=1567bb089786ca93b5e6384504433774c5e4de77" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 1567bb089786ca93b5e6384504433774c5e4de77-----------------
+Server on 1567bb089786ca93b5e6384504433774c5e4de77 started.
+Validation passed. 1567bb089786ca93b5e6384504433774c5e4de77 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-46-g1567bb0897-dirty
+Edition: Community
+Git Commit Hash: 1567bb089786ca93b5e6384504433774c5e4de77
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:15:19
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 35 revisions left to test after this (roughly 5 steps)
+[c34f6fc83d69c65c92a4ea31cbfd49312067282b] planner: store the hints of session variable (#45814)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-82-gc34f6fc83d-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:16:16" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=c34f6fc83d69c65c92a4ea31cbfd49312067282b" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on c34f6fc83d69c65c92a4ea31cbfd49312067282b-----------------
+Server on c34f6fc83d69c65c92a4ea31cbfd49312067282b started.
+Validation passed. c34f6fc83d69c65c92a4ea31cbfd49312067282b is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-82-gc34f6fc83d-dirty
+Edition: Community
+Git Commit Hash: c34f6fc83d69c65c92a4ea31cbfd49312067282b
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:16:16
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 17 revisions left to test after this (roughly 4 steps)
+[5a305400a94464d226f95503c6a3068ef881e69d] ddl: use the correct timezone to encode record for adding index (#46055)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-100-g5a305400a9-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:16:59" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=5a305400a94464d226f95503c6a3068ef881e69d" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 5a305400a94464d226f95503c6a3068ef881e69d-----------------
+Server on 5a305400a94464d226f95503c6a3068ef881e69d started.
+Validation passed. 5a305400a94464d226f95503c6a3068ef881e69d is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-100-g5a305400a9-dirty
+Edition: Community
+Git Commit Hash: 5a305400a94464d226f95503c6a3068ef881e69d
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:16:59
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 8 revisions left to test after this (roughly 3 steps)
+[95b4dcce80d3ad4af89bc9813911af94be7f7a82] *: use std/slices to replace exp/slices (#46128)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-109-g95b4dcce80-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:17:40" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=95b4dcce80d3ad4af89bc9813911af94be7f7a82" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 95b4dcce80d3ad4af89bc9813911af94be7f7a82-----------------
+Server on 95b4dcce80d3ad4af89bc9813911af94be7f7a82 started.
+Validation failed at run 1. 95b4dcce80d3ad4af89bc9813911af94be7f7a82 is a bad label. Expected: . Actual: ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-109-g95b4dcce80-dirty
+Edition: Community
+Git Commit Hash: 95b4dcce80d3ad4af89bc9813911af94be7f7a82
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:17:40
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 4 revisions left to test after this (roughly 2 steps)
+[b69fa21942d163d59f46a858b689f3b4dc81d1a6] statistics: support reject for LFU cache (#46090)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-104-gb69fa21942-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:18:18" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=b69fa21942d163d59f46a858b689f3b4dc81d1a6" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on b69fa21942d163d59f46a858b689f3b4dc81d1a6-----------------
+Server on b69fa21942d163d59f46a858b689f3b4dc81d1a6 started.
+Validation failed at run 1. b69fa21942d163d59f46a858b689f3b4dc81d1a6 is a bad label. Expected: . Actual: ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-104-gb69fa21942-dirty
+Edition: Community
+Git Commit Hash: b69fa21942d163d59f46a858b689f3b4dc81d1a6
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:18:18
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 1 revision left to test after this (roughly 1 step)
+[6fd1924d9112a32cecbe8fa6c59ae308a49971dd] util/collate: implement utf8mb4_0900_ai_ci collation (#45650)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-102-g6fd1924d91-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:18:59" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=6fd1924d9112a32cecbe8fa6c59ae308a49971dd" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on 6fd1924d9112a32cecbe8fa6c59ae308a49971dd-----------------
+Server on 6fd1924d9112a32cecbe8fa6c59ae308a49971dd started.
+Validation failed at run 1. 6fd1924d9112a32cecbe8fa6c59ae308a49971dd is a bad label. Expected: . Actual: ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-102-g6fd1924d91-dirty
+Edition: Community
+Git Commit Hash: 6fd1924d9112a32cecbe8fa6c59ae308a49971dd
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:18:59
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[d426bcdad9a124267e18d158aecd07fd3abdf3c0] br/lightning: add kv writer for external backend (#46042)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue50926/issue50926.result' '/Users/yichenhan/workload/regression_detection/issue50926' '/Users/yichenhan/dummy/tidb' '1' '30' '/Users/yichenhan/workload/regression_detection/issue50926/bisect-issue-50926.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v7.4.0-alpha-101-gd426bcdad9-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-04 03:19:43" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=d426bcdad9a124267e18d158aecd07fd3abdf3c0" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on d426bcdad9a124267e18d158aecd07fd3abdf3c0-----------------
+Server on d426bcdad9a124267e18d158aecd07fd3abdf3c0 started.
+Validation passed. d426bcdad9a124267e18d158aecd07fd3abdf3c0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0-alpha-101-gd426bcdad9-dirty
+Edition: Community
+Git Commit Hash: d426bcdad9a124267e18d158aecd07fd3abdf3c0
+Git Branch: HEAD
+UTC Build Time: 2024-03-04 03:19:43
+GoVersion: go1.21.4
+Race Enabled: false
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on -----------------
+----------------------------------------------------------------------
+6fd1924d9112a32cecbe8fa6c59ae308a49971dd is the first bad commit
+commit 6fd1924d9112a32cecbe8fa6c59ae308a49971dd
+Author: YangKeao <yangkeao@chunibyo.icu>
+Date:   Tue Aug 15 18:02:02 2023 +0800
+
+    util/collate: implement utf8mb4_0900_ai_ci collation (#45650)
+    
+    close pingcap/tidb#37566
+
+ .gitattributes                                     |     3 +
+ LICENSES/Unicode-DFS-2016-LICENSE                  |    39 +
+ build/nogo_config.json                             |     5 +
+ cmd/explaintest/r/collation_misc_enabled.result    |     2 +
+ ddl/table_modify_test.go                           |     2 +
+ executor/test/seqtest/seq_executor_test.go         |     1 +
+ expression/builtin_like_test.go                    |    69 +-
+ expression/builtin_string_test.go                  |    20 +-
+ expression/collation_test.go                       |     9 +
+ expression/test/collation/BUILD.bazel              |     9 +
+ expression/test/collation/uca_test.go              |    47 +
+ server/tests/tidb_serial_test.go                   |     2 +-
+ util/collate/BUILD.bazel                           |     7 +-
+ util/collate/collate.go                            |     7 +-
+ util/collate/collate_bench_test.go                 |    24 +
+ util/collate/collate_test.go                       |    68 +-
+ util/collate/ucadata/BUILD.bazel                   |    25 +
+ util/collate/ucadata/data.go                       |    23 +
+ util/collate/ucadata/generator/BUILD.bazel         |    22 +
+ util/collate/ucadata/generator/allkeys-4.0.0.txt   | 15169 +++++++++
+ util/collate/ucadata/generator/allkeys-9.0.0.txt   | 30699 +++++++++++++++++++
+ util/collate/ucadata/generator/data.go.tpl         |    31 +
+ util/collate/ucadata/generator/magic.go            |    38 +
+ util/collate/ucadata/generator/main.go             |   421 +
+ .../ucadata/unicode_0900_ai_ci_data_generated.go   | 12321 ++++++++
+ .../ucadata/unicode_0900_ai_ci_data_test.go        |    34 +
+ util/collate/ucadata/unicode_ci_data_generated.go  |  4421 +++
+ .../ucadata/unicode_ci_data_original_test.go       |   395 +
+ util/collate/ucadata/unicode_ci_data_test.go       |    59 +
+ util/collate/ucaimpl/BUILD.bazel                   |    15 +
+ util/collate/ucaimpl/main.go                       |    62 +
+ util/collate/ucaimpl/unicode_ci.go.tpl             |   114 +
+ util/collate/unicode_0400_ci_generated.go          |   114 +
+ util/collate/unicode_0400_ci_impl.go               |    78 +
+ util/collate/unicode_0900_ai_ci_generated.go       |   114 +
+ util/collate/unicode_0900_ai_ci_impl.go            |    69 +
+ util/collate/unicode_ci.go                         |   158 -
+ util/collate/unicode_ci_data.go                    |   395 -
+ 38 files changed, 64488 insertions(+), 603 deletions(-)
+ create mode 100644 LICENSES/Unicode-DFS-2016-LICENSE
+ create mode 100644 expression/test/collation/BUILD.bazel
+ create mode 100644 expression/test/collation/uca_test.go
+ create mode 100644 util/collate/ucadata/BUILD.bazel
+ create mode 100644 util/collate/ucadata/data.go
+ create mode 100644 util/collate/ucadata/generator/BUILD.bazel
+ create mode 100644 util/collate/ucadata/generator/allkeys-4.0.0.txt
+ create mode 100644 util/collate/ucadata/generator/allkeys-9.0.0.txt
+ create mode 100644 util/collate/ucadata/generator/data.go.tpl
+ create mode 100644 util/collate/ucadata/generator/magic.go
+ create mode 100644 util/collate/ucadata/generator/main.go
+ create mode 100644 util/collate/ucadata/unicode_0900_ai_ci_data_generated.go
+ create mode 100644 util/collate/ucadata/unicode_0900_ai_ci_data_test.go
+ create mode 100644 util/collate/ucadata/unicode_ci_data_generated.go
+ create mode 100644 util/collate/ucadata/unicode_ci_data_original_test.go
+ create mode 100644 util/collate/ucadata/unicode_ci_data_test.go
+ create mode 100644 util/collate/ucaimpl/BUILD.bazel
+ create mode 100644 util/collate/ucaimpl/main.go
+ create mode 100644 util/collate/ucaimpl/unicode_ci.go.tpl
+ create mode 100644 util/collate/unicode_0400_ci_generated.go
+ create mode 100644 util/collate/unicode_0400_ci_impl.go
+ create mode 100644 util/collate/unicode_0900_ai_ci_generated.go
+ create mode 100644 util/collate/unicode_0900_ai_ci_impl.go
+ delete mode 100644 util/collate/unicode_ci.go
+ delete mode 100644 util/collate/unicode_ci_data.go
+bisect found first bad commit

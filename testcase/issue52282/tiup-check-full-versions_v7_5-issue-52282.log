@@ -1,0 +1,125 @@
+Start to analyze regression behavior among releases for issue 52282
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.5.0-----------------
+Server on v7.5.0 started.
+Validation failed at run 1. v7.5.0 is a bad label.
+Expected: 
+
+Actual: 
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue52282_testcase.sql
+issue52282_testcase.sql: 
+drop table if exists `t`;
+create table t (a int, b varchar(255), primary key (a)) partition by hash(a) partitions 2;
+insert into t values (1, '1'), (2, '2'), (3, '3');
+set @@tidb_partition_prune_mode='static';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='dynamic';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='static-only';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='dynamic-only';
+select * from t tablesample regions();
+-----------------Test Result-----------------
+Result : 
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.0
+Edition: Community
+Git Commit Hash: 069631e2ecfedc000ffb92c67207bea81380f020
+Git Branch: heads/refs/tags/v7.5.0
+UTC Build Time: 2023-11-24 08:41:10
+GoVersion: go1.21.3
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.5.0-----------------
+----------------------------------------------------------------------
+mysqld is alive
+----------------------------------------------------------------------
+-----------------Regression Test Result on v7.5.1-----------------
+Server on v7.5.1 started.
+Validation failed at run 1. v7.5.1 is a bad label.
+Expected: 
+
+Actual: 
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue52282_testcase.sql
+issue52282_testcase.sql: 
+drop table if exists `t`;
+create table t (a int, b varchar(255), primary key (a)) partition by hash(a) partitions 2;
+insert into t values (1, '1'), (2, '2'), (3, '3');
+set @@tidb_partition_prune_mode='static';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='dynamic';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='static-only';
+select * from t tablesample regions();
+set @@tidb_partition_prune_mode='dynamic-only';
+select * from t tablesample regions();
+-----------------Test Result-----------------
+Result : 
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+a	b
+2	2
+1	1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.5.1
+Edition: Community
+Git Commit Hash: 7d16cc79e81bbf573124df3fd9351c26963f3e70
+Git Branch: heads/refs/tags/v7.5.1
+UTC Build Time: 2024-02-27 14:21:44
+GoVersion: go1.21.6
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.5.1-----------------
+----------------------------------------------------------------------

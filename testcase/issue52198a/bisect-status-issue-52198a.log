@@ -1,0 +1,35 @@
+
+Commit 6701bf1527c7386a82396a1ecfb5322872daa2b3 : Success
+Commit de16e0d319924a45712a3d2d36c2114439ab0c2e : Success
+Commit 3801fc1fd57d10f75228a499d414a09cd4a801e6 : Failure
+Commit 4f4f911b70645ea43606a40b479ac040bd709c2c : Success
+Commit b55c8551421852bae33af671fa1bfc3f605bb494 : Success
+Commit 897d93db8c9b0959803cc7ebae419bf72da0ded3 : Success
+Commit 46e95f4c3f22506e742b7a3a912b61ed9dd6285c : Failure
+Commit ccbab5eeb7e004802610daf9c6bd91918e568c8e : Failure
+Commit d604b0693990a7ec7a8612e44bc02cbb7af9c832 : Success
+Commit 2d57833eb64bf5905ed5b687af7a60e54170d3bb : Success
+# bad: [2ae1933f11898e35833c0f4abdbd5a763a1aeb19] planner: fix hidden column may do not have a virtual expression (#52184)
+# good: [52794d985ba6325d75a714d4eaa0838d59425eb6] executor: use analyze scan concurrency to control index analyze (#50639) (#50642)
+git bisect start 'master' 'v7.6.0'
+# good: [6701bf1527c7386a82396a1ecfb5322872daa2b3] ddl: create table accelerate (#49687)
+git bisect good 6701bf1527c7386a82396a1ecfb5322872daa2b3
+# good: [de16e0d319924a45712a3d2d36c2114439ab0c2e] executor: Support Parallel Sort (#49705)
+git bisect good de16e0d319924a45712a3d2d36c2114439ab0c2e
+# bad: [3801fc1fd57d10f75228a499d414a09cd4a801e6] feat: join errors (#51659)
+git bisect bad 3801fc1fd57d10f75228a499d414a09cd4a801e6
+# good: [4f4f911b70645ea43606a40b479ac040bd709c2c] executor: add memory tracker for memtableRetriever (#51455)
+git bisect good 4f4f911b70645ea43606a40b479ac040bd709c2c
+# good: [b55c8551421852bae33af671fa1bfc3f605bb494] importinto: fix incorrect index kv group count when table have common handle (#51615)
+git bisect good b55c8551421852bae33af671fa1bfc3f605bb494
+# good: [897d93db8c9b0959803cc7ebae419bf72da0ded3] *: add super privilege check for some admin commands (#51497)
+git bisect good 897d93db8c9b0959803cc7ebae419bf72da0ded3
+# bad: [46e95f4c3f22506e742b7a3a912b61ed9dd6285c] bindinfo: add timeout for loading binding from storage (#51550)
+git bisect bad 46e95f4c3f22506e742b7a3a912b61ed9dd6285c
+# bad: [ccbab5eeb7e004802610daf9c6bd91918e568c8e] *: Enable plan cache for partitioned tables (#49161)
+git bisect bad ccbab5eeb7e004802610daf9c6bd91918e568c8e
+# good: [d604b0693990a7ec7a8612e44bc02cbb7af9c832] br: stop log when full restore failed (#51578)
+git bisect good d604b0693990a7ec7a8612e44bc02cbb7af9c832
+# good: [2d57833eb64bf5905ed5b687af7a60e54170d3bb] *: fix InContainer check for cgroup v2 (#51669)
+git bisect good 2d57833eb64bf5905ed5b687af7a60e54170d3bb
+# first bad commit: [ccbab5eeb7e004802610daf9c6bd91918e568c8e] *: Enable plan cache for partitioned tables (#49161)

@@ -1,0 +1,35 @@
+
+Commit 4220dfa819525ba214396666daa5d2441236f29c : Success
+Commit 3036b6d2257a55d5ccf037b4de09a8b6f19704b7 : Failure
+Commit cb8e85d88acc8087e99fd95bce53131965f19f75 : Failure
+Commit 1567bb089786ca93b5e6384504433774c5e4de77 : Success
+Commit c34f6fc83d69c65c92a4ea31cbfd49312067282b : Success
+Commit 5a305400a94464d226f95503c6a3068ef881e69d : Success
+Commit 95b4dcce80d3ad4af89bc9813911af94be7f7a82 : Failure
+Commit b69fa21942d163d59f46a858b689f3b4dc81d1a6 : Failure
+Commit 6fd1924d9112a32cecbe8fa6c59ae308a49971dd : Failure
+Commit d426bcdad9a124267e18d158aecd07fd3abdf3c0 : Success
+# bad: [38cb4f3312be9199a983c0ef282d2ea2e28a7824] Revert "placement: merge the rules if the constraints are the same (#… (#47527)
+# good: [40b72e7a9a4fc9670d4c5d974dd503a3c6097471] partition: Revert support batch_point_get for partition table in dynamic mode (#45891) (#45902)
+git bisect start 'v7.4.0' 'v7.3.0'
+# good: [4220dfa819525ba214396666daa5d2441236f29c] *: refine tikv/client-go log to print context information(such as conn id) as much as possible (#45559)
+git bisect good 4220dfa819525ba214396666daa5d2441236f29c
+# bad: [3036b6d2257a55d5ccf037b4de09a8b6f19704b7] importinto: support split large csv file (#46480)
+git bisect bad 3036b6d2257a55d5ccf037b4de09a8b6f19704b7
+# bad: [cb8e85d88acc8087e99fd95bce53131965f19f75] planner: grouping function should be recreated with args, retType and metadata (#45848)
+git bisect bad cb8e85d88acc8087e99fd95bce53131965f19f75
+# good: [1567bb089786ca93b5e6384504433774c5e4de77] Makefile: add coverage report for `explaintest` (#45930)
+git bisect good 1567bb089786ca93b5e6384504433774c5e4de77
+# good: [c34f6fc83d69c65c92a4ea31cbfd49312067282b] planner: store the hints of session variable (#45814)
+git bisect good c34f6fc83d69c65c92a4ea31cbfd49312067282b
+# good: [5a305400a94464d226f95503c6a3068ef881e69d] ddl: use the correct timezone to encode record for adding index (#46055)
+git bisect good 5a305400a94464d226f95503c6a3068ef881e69d
+# bad: [95b4dcce80d3ad4af89bc9813911af94be7f7a82] *: use std/slices to replace exp/slices (#46128)
+git bisect bad 95b4dcce80d3ad4af89bc9813911af94be7f7a82
+# bad: [b69fa21942d163d59f46a858b689f3b4dc81d1a6] statistics: support reject for LFU cache (#46090)
+git bisect bad b69fa21942d163d59f46a858b689f3b4dc81d1a6
+# bad: [6fd1924d9112a32cecbe8fa6c59ae308a49971dd] util/collate: implement utf8mb4_0900_ai_ci collation (#45650)
+git bisect bad 6fd1924d9112a32cecbe8fa6c59ae308a49971dd
+# good: [d426bcdad9a124267e18d158aecd07fd3abdf3c0] br/lightning: add kv writer for external backend (#46042)
+git bisect good d426bcdad9a124267e18d158aecd07fd3abdf3c0
+# first bad commit: [6fd1924d9112a32cecbe8fa6c59ae308a49971dd] util/collate: implement utf8mb4_0900_ai_ci collation (#45650)

@@ -1,0 +1,35 @@
+
+Commit 6701bf1527c7386a82396a1ecfb5322872daa2b3 : Success
+Commit c3c067eb9334ba75d59e9712f0c21b378ffeca5e : Success
+Commit a8a9a040774dea10c956c6cc10bde57142bf7298 : Failure
+Commit a59551b701704ec2b3d33dc1299ea6c75c34acb8 : Failure
+Commit 1678c4fa25dbe888582b10132edd4899a1203f41 : Success
+Commit 0df9170791401b31539a40000ecb0739e7a43283 : Failure
+Commit 6af4bbaabbbcbd50689d18b8d88b96194270b3e2 : Success
+Commit f4e758a89daa73f846dbe40787b07d1bd2b0742e : Success
+Commit 3c3ba00cb40dee3b525fb22cb8ab33c52820acce : Success
+Commit 801de42a0e85270904bac297d8d42595b9175162 : Success
+# bad: [e25fb1871a4cda5a7718c4fd148702e03fe45047] ddl: fix some unit tests in ddl package when using infoschema v2 (#51869)
+# good: [52794d985ba6325d75a714d4eaa0838d59425eb6] executor: use analyze scan concurrency to control index analyze (#50639) (#50642)
+git bisect start 'master' 'v7.6.0'
+# good: [6701bf1527c7386a82396a1ecfb5322872daa2b3] ddl: create table accelerate (#49687)
+git bisect good 6701bf1527c7386a82396a1ecfb5322872daa2b3
+# good: [c3c067eb9334ba75d59e9712f0c21b378ffeca5e] ddl: split range group for each index separately for global sort import (#50658)
+git bisect good c3c067eb9334ba75d59e9712f0c21b378ffeca5e
+# bad: [a8a9a040774dea10c956c6cc10bde57142bf7298] * : delete unuse interface and implementation (#51552)
+git bisect bad a8a9a040774dea10c956c6cc10bde57142bf7298
+# bad: [a59551b701704ec2b3d33dc1299ea6c75c34acb8] ddl: rename tidb_ddl_version to tidb_enable_fast_create_table (#51047)
+git bisect bad a59551b701704ec2b3d33dc1299ea6c75c34acb8
+# good: [1678c4fa25dbe888582b10132edd4899a1203f41] build(deps): bump github.com/prometheus/client_model from 0.5.0 to 0.6.0 (#51264)
+git bisect good 1678c4fa25dbe888582b10132edd4899a1203f41
+# bad: [0df9170791401b31539a40000ecb0739e7a43283] planner/infoschema: support push down lower to some memtables (#50874)
+git bisect bad 0df9170791401b31539a40000ecb0739e7a43283
+# good: [6af4bbaabbbcbd50689d18b8d88b96194270b3e2] planner, executor: enhance the index join's choice (#51128)
+git bisect good 6af4bbaabbbcbd50689d18b8d88b96194270b3e2
+# good: [f4e758a89daa73f846dbe40787b07d1bd2b0742e] statistics: build the table analysis job queue part2 (#51152)
+git bisect good f4e758a89daa73f846dbe40787b07d1bd2b0742e
+# good: [3c3ba00cb40dee3b525fb22cb8ab33c52820acce] ddl: data type default values support `STR_TO_DATE('1980-01-01','%Y-%m-%d')` (#51278)
+git bisect good 3c3ba00cb40dee3b525fb22cb8ab33c52820acce
+# good: [801de42a0e85270904bac297d8d42595b9175162] statistics: use correct last update version (#51287)
+git bisect good 801de42a0e85270904bac297d8d42595b9175162
+# first bad commit: [0df9170791401b31539a40000ecb0739e7a43283] planner/infoschema: support push down lower to some memtables (#50874)

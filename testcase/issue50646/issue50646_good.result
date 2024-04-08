@@ -1,0 +1,9 @@
+id	estRows	task	access object	operator info
+Delete_6	N/A	root		N/A
+└─MergeJoin_9	12487.50	root		inner join, left key:ticase.t.a, right key:ticase.t1.a
+  ├─IndexLookUp_16(Build)	9990.00	root		
+  │ ├─IndexFullScan_14(Build)	9990.00	cop[tikv]	table:t1, index:idx(a)	keep order:true, stats:pseudo
+  │ └─TableRowIDScan_15(Probe)	9990.00	cop[tikv]	table:t1	keep order:false, stats:pseudo
+  └─IndexLookUp_13(Probe)	9990.00	root		
+    ├─IndexFullScan_11(Build)	9990.00	cop[tikv]	table:t, index:idx(a)	keep order:true, stats:pseudo
+    └─TableRowIDScan_12(Probe)	9990.00	cop[tikv]	table:t	keep order:false, stats:pseudo

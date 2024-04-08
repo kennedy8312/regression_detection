@@ -1,0 +1,35 @@
+
+Commit f799e720f5aec32664c6910e47bad46e5c838b4f : Success
+Commit b912237ac78b66057040e7d7d45fb84df6f81548 : Failure
+Commit 08f6ea484f508cc40d31c297e81758ac25383f7f : Success
+Commit 25dd54f4f7db7d857818d554a1d0120604b81457 : Success
+Commit bf2cc452066cb0269f4036d748ad4fa96eb021b8 : Success
+Commit af968f22fb2d42f3316fb7a8d583e29cbeee2037 : Success
+Commit 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb : Success
+Commit 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c : Failure
+Commit b477b1c946205dee9456e27e967e7edd4ffdb80f : Failure
+Commit 4a8006cad25b13560471cd21445bbc3716b6f97c : Failure
+# bad: [f4ca0821fb96a2bdd37d2fb97eb26c07fc58d4e4] ddl: use a param to decide whether exec in distributed mode (#41549) (#41554)
+# good: [706c3fa3c526cdba5b3e9f066b1a568fb96c56e3] session: fix tidb_enable_gc_aware_memory_track after upgrade (#40173) (#40179)
+git bisect start 'v6.6.0' 'v6.5.0'
+# good: [f799e720f5aec32664c6910e47bad46e5c838b4f] store/copr: disable batch store copr when paging is enabled (#39580)
+git bisect good f799e720f5aec32664c6910e47bad46e5c838b4f
+# bad: [b912237ac78b66057040e7d7d45fb84df6f81548] planner: support keep_order and no_keep_order hint (#40089)
+git bisect bad b912237ac78b66057040e7d7d45fb84df6f81548
+# good: [08f6ea484f508cc40d31c297e81758ac25383f7f] metrics: add EMA cpu usage (#39995)
+git bisect good 08f6ea484f508cc40d31c297e81758ac25383f7f
+# good: [25dd54f4f7db7d857818d554a1d0120604b81457] ttl: fix change status sql argument (#40234)
+git bisect good 25dd54f4f7db7d857818d554a1d0120604b81457
+# good: [bf2cc452066cb0269f4036d748ad4fa96eb021b8] br: add errch buf for checkpoint (#40166)
+git bisect good bf2cc452066cb0269f4036d748ad4fa96eb021b8
+# good: [af968f22fb2d42f3316fb7a8d583e29cbeee2037] docs: add TiDB Forum link and adjust link order (#39868)
+git bisect good af968f22fb2d42f3316fb7a8d583e29cbeee2037
+# good: [2d755a818c8802cf8fb9f2516ae20c9da3b84fdb] executor: fix data race at the ShowExec (#39817)
+git bisect good 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb
+# bad: [83ec4b03f35830f9d6f3054b6dbf5ee2b411251c] executor: support insert ignore/duplicate replace into with unique multi-valued index (#40369)
+git bisect bad 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c
+# bad: [b477b1c946205dee9456e27e967e7edd4ffdb80f] *: Supports create/alter/drop resource group (#40188)
+git bisect bad b477b1c946205dee9456e27e967e7edd4ffdb80f
+# bad: [4a8006cad25b13560471cd21445bbc3716b6f97c] planner: fix panic during starting tidb-server if creating global binding for partition table (#40402)
+git bisect bad 4a8006cad25b13560471cd21445bbc3716b6f97c
+# first bad commit: [4a8006cad25b13560471cd21445bbc3716b6f97c] planner: fix panic during starting tidb-server if creating global binding for partition table (#40402)

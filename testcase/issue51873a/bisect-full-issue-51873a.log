@@ -1,0 +1,921 @@
+
+Bisecting: a merge base must be tested
+[f799e720f5aec32664c6910e47bad46e5c838b4f] store/copr: disable batch store copr when paging is enabled (#39580)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.5.0-alpha-251-gf799e720f5-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:08:50" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=f799e720f5aec32664c6910e47bad46e5c838b4f" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on f799e720f5aec32664c6910e47bad46e5c838b4f-----------------
+Server on f799e720f5aec32664c6910e47bad46e5c838b4f started.
+Validation passed. f799e720f5aec32664c6910e47bad46e5c838b4f is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.5.0-alpha-251-gf799e720f5-dirty
+Edition: Community
+Git Commit Hash: f799e720f5aec32664c6910e47bad46e5c838b4f
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:08:50
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on f799e720f5aec32664c6910e47bad46e5c838b4f-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 283 revisions left to test after this (roughly 8 steps)
+[b912237ac78b66057040e7d7d45fb84df6f81548] planner: support keep_order and no_keep_order hint (#40089)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-176-gb912237ac7-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:09:43" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=b912237ac78b66057040e7d7d45fb84df6f81548" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on b912237ac78b66057040e7d7d45fb84df6f81548-----------------
+Server on b912237ac78b66057040e7d7d45fb84df6f81548 started.
+Validation failed at run 1. b912237ac78b66057040e7d7d45fb84df6f81548 is a bad label.
+Expected: 
+
+Actual: 
+portfolioCode
+1
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+portfolioCode
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-176-gb912237ac7-dirty
+Edition: Community
+Git Commit Hash: b912237ac78b66057040e7d7d45fb84df6f81548
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:09:43
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on b912237ac78b66057040e7d7d45fb84df6f81548-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 141 revisions left to test after this (roughly 7 steps)
+[08f6ea484f508cc40d31c297e81758ac25383f7f] metrics: add EMA cpu usage (#39995)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-34-g08f6ea484f-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:10:35" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=08f6ea484f508cc40d31c297e81758ac25383f7f" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+go: downloading golang.org/x/sys v0.3.0
+go: downloading golang.org/x/text v0.5.0
+go: downloading golang.org/x/net v0.4.0
+go: downloading golang.org/x/term v0.3.0
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 08f6ea484f508cc40d31c297e81758ac25383f7f-----------------
+Server on 08f6ea484f508cc40d31c297e81758ac25383f7f started.
+Validation passed. 08f6ea484f508cc40d31c297e81758ac25383f7f is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-34-g08f6ea484f-dirty
+Edition: Community
+Git Commit Hash: 08f6ea484f508cc40d31c297e81758ac25383f7f
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:10:35
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 08f6ea484f508cc40d31c297e81758ac25383f7f-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 70 revisions left to test after this (roughly 6 steps)
+[25dd54f4f7db7d857818d554a1d0120604b81457] ttl: fix change status sql argument (#40234)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-105-g25dd54f4f7-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:11:38" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=25dd54f4f7db7d857818d554a1d0120604b81457" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+go: downloading github.com/tikv/client-go/v2 v2.0.4-0.20221226080148-018c59dbd837
+go: downloading github.com/pingcap/kvproto v0.0.0-20221213093948-9ccc6beaf0aa
+go: downloading github.com/tiancaiamao/gp v0.0.0-20221221095600-1a473d1f9b4b
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 25dd54f4f7db7d857818d554a1d0120604b81457-----------------
+Server on 25dd54f4f7db7d857818d554a1d0120604b81457 started.
+Validation passed. 25dd54f4f7db7d857818d554a1d0120604b81457 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-105-g25dd54f4f7-dirty
+Edition: Community
+Git Commit Hash: 25dd54f4f7db7d857818d554a1d0120604b81457
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:11:38
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 25dd54f4f7db7d857818d554a1d0120604b81457-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 35 revisions left to test after this (roughly 5 steps)
+[bf2cc452066cb0269f4036d748ad4fa96eb021b8] br: add errch buf for checkpoint (#40166)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-140-gbf2cc45206-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:12:25" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=bf2cc452066cb0269f4036d748ad4fa96eb021b8" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+go: downloading github.com/pingcap/badger v1.5.1-0.20221229114011-ddffaa0fff7a
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on bf2cc452066cb0269f4036d748ad4fa96eb021b8-----------------
+Server on bf2cc452066cb0269f4036d748ad4fa96eb021b8 started.
+Validation passed. bf2cc452066cb0269f4036d748ad4fa96eb021b8 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-140-gbf2cc45206-dirty
+Edition: Community
+Git Commit Hash: bf2cc452066cb0269f4036d748ad4fa96eb021b8
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:12:25
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on bf2cc452066cb0269f4036d748ad4fa96eb021b8-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 17 revisions left to test after this (roughly 4 steps)
+[af968f22fb2d42f3316fb7a8d583e29cbeee2037] docs: add TiDB Forum link and adjust link order (#39868)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-158-gaf968f22fb-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:13:14" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=af968f22fb2d42f3316fb7a8d583e29cbeee2037" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on af968f22fb2d42f3316fb7a8d583e29cbeee2037-----------------
+Server on af968f22fb2d42f3316fb7a8d583e29cbeee2037 started.
+Validation passed. af968f22fb2d42f3316fb7a8d583e29cbeee2037 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-158-gaf968f22fb-dirty
+Edition: Community
+Git Commit Hash: af968f22fb2d42f3316fb7a8d583e29cbeee2037
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:13:14
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on af968f22fb2d42f3316fb7a8d583e29cbeee2037-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 8 revisions left to test after this (roughly 3 steps)
+[2d755a818c8802cf8fb9f2516ae20c9da3b84fdb] executor: fix data race at the ShowExec (#39817)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-167-g2d755a818c-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:13:56" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=2d755a818c8802cf8fb9f2516ae20c9da3b84fdb" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb-----------------
+Server on 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb started.
+Validation passed. 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-167-g2d755a818c-dirty
+Edition: Community
+Git Commit Hash: 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:13:56
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 2d755a818c8802cf8fb9f2516ae20c9da3b84fdb-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 4 revisions left to test after this (roughly 2 steps)
+[83ec4b03f35830f9d6f3054b6dbf5ee2b411251c] executor: support insert ignore/duplicate replace into with unique multi-valued index (#40369)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-171-g83ec4b03f3-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:14:40" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=83ec4b03f35830f9d6f3054b6dbf5ee2b411251c" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c-----------------
+Server on 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c started.
+Validation failed at run 1. 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c is a bad label.
+Expected: 
+
+Actual: 
+portfolioCode
+1
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+portfolioCode
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-171-g83ec4b03f3-dirty
+Edition: Community
+Git Commit Hash: 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:14:40
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 83ec4b03f35830f9d6f3054b6dbf5ee2b411251c-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 1 revision left to test after this (roughly 1 step)
+[b477b1c946205dee9456e27e967e7edd4ffdb80f] *: Supports create/alter/drop resource group (#40188)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-169-gb477b1c946-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:15:23" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=b477b1c946205dee9456e27e967e7edd4ffdb80f" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on b477b1c946205dee9456e27e967e7edd4ffdb80f-----------------
+Server on b477b1c946205dee9456e27e967e7edd4ffdb80f started.
+Validation failed at run 1. b477b1c946205dee9456e27e967e7edd4ffdb80f is a bad label.
+Expected: 
+
+Actual: 
+portfolioCode
+1
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+portfolioCode
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-169-gb477b1c946-dirty
+Edition: Community
+Git Commit Hash: b477b1c946205dee9456e27e967e7edd4ffdb80f
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:15:23
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on b477b1c946205dee9456e27e967e7edd4ffdb80f-----------------
+--------------------------------------------------------------------------------------
+Bisecting: 0 revisions left to test after this (roughly 0 steps)
+[4a8006cad25b13560471cd21445bbc3716b6f97c] planner: fix panic during starting tidb-server if creating global binding for partition table (#40402)
+running  '/Users/yichenhan/workload/regression_detection/regression_detect_runtest.sh' '127.0.0.1' '4000' 'root' 'test' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a_testcase.sql' '/Users/yichenhan/workload/regression_detection/issue51873a/issue51873a.result' '/Users/yichenhan/workload/regression_detection/issue51873a' '/Users/yichenhan/dummy/tidb' '1' '100' '/Users/yichenhan/workload/regression_detection/issue51873a/bisect-status-issue-51873a.log'
+CGO_ENABLED=1 GO111MODULE=on go build  -tags codes  -ldflags '-X "github.com/pingcap/tidb/parser/mysql.TiDBReleaseVersion=v6.6.0-alpha-168-g4a8006cad2-dirty" -X "github.com/pingcap/tidb/util/versioninfo.TiDBBuildTS=2024-03-26 10:15:47" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitHash=4a8006cad25b13560471cd21445bbc3716b6f97c" -X "github.com/pingcap/tidb/util/versioninfo.TiDBGitBranch=HEAD" -X "github.com/pingcap/tidb/util/versioninfo.TiDBEdition=Community" ' -o bin/tidb-server ./tidb-server
+Build TiDB Server successfully!
+mysqld is alive
+--------------------------------------------------------------------------------------
+-----------------Regression Test Result on 4a8006cad25b13560471cd21445bbc3716b6f97c-----------------
+Server on 4a8006cad25b13560471cd21445bbc3716b6f97c started.
+Validation failed at run 1. 4a8006cad25b13560471cd21445bbc3716b6f97c is a bad label.
+Expected: 
+
+Actual: 
+portfolioCode
+1
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue51873a_testcase.sql
+issue51873a_testcase.sql: 
+drop table if exists `h1`;
+drop table if exists `h2`;
+CREATE TABLE `h1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `position_date` date NOT NULL,
+  `asset_id` varchar(32) DEFAULT NULL,
+  `portfolio_code` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`,`position_date`) /*T![clustered_index] NONCLUSTERED */,
+  UNIQUE KEY `uidx_posi_asset_balance_key` (`position_date`,`portfolio_code`,`asset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin AUTO_INCREMENT=30002
+PARTITION BY RANGE COLUMNS(`position_date`)
+(PARTITION `p202401` VALUES LESS THAN ('2024-02-01'));
+create table h2 like h1;
+insert into h1 values(1,'2024-01-01',1,1);
+insert into h2 values(1,'2024-01-01',1,1);
+analyze table h1;
+
+with assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+
+with cashBalance AS 
+    (SELECT portfolio_code,
+         asset_id
+    FROM h2 pcb
+    WHERE pcb.position_date = '2024-01-01' ), 
+assetBalance AS 
+    (SELECT asset_id,
+         portfolio_code
+    FROM h1 pab
+    WHERE pab.position_date = '2024-01-01' ), 
+assetIdList AS 
+    (SELECT DISTINCT asset_id AS assetId
+    FROM assetBalance )
+SELECT main.portfolioCode
+FROM 
+    (SELECT DISTINCT balance.portfolio_code AS portfolioCode
+    FROM assetBalance balance
+    LEFT JOIN assetIdList
+        ON balance.asset_id = assetIdList.assetId ) main;
+-----------------Test Result-----------------
+Result : 
+portfolioCode
+1
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v6.6.0-alpha-168-g4a8006cad2-dirty
+Edition: Community
+Git Commit Hash: 4a8006cad25b13560471cd21445bbc3716b6f97c
+Git Branch: HEAD
+UTC Build Time: 2024-03-26 10:15:47
+GoVersion: go1.21.4
+Race Enabled: false
+TiKV Min Version: 6.2.0-alpha
+Check Table Before Drop: false
+Store: unistore
+
+-----------------End of regression test on 4a8006cad25b13560471cd21445bbc3716b6f97c-----------------
+--------------------------------------------------------------------------------------
+4a8006cad25b13560471cd21445bbc3716b6f97c is the first bad commit
+commit 4a8006cad25b13560471cd21445bbc3716b6f97c
+Author: Song Gao <disxiaofei@163.com>
+Date:   Mon Jan 9 13:18:27 2023 +0800
+
+    planner: fix panic during starting tidb-server if creating global binding for partition table (#40402)
+    
+    * fix
+    
+    Co-authored-by: Ti Chi Robot <ti-community-prow-bot@tidb.io>
+
+ executor/analyzetest/analyze_test.go            |  2 +-
+ planner/core/collect_column_stats_usage_test.go |  5 +++
+ planner/core/integration_partition_test.go      | 36 +++++++++++++++++
+ planner/core/logical_plan_builder.go            | 51 +++++++++++++++----------
+ statistics/handle/handle.go                     |  7 +++-
+ 5 files changed, 78 insertions(+), 23 deletions(-)
+bisect found first bad commit

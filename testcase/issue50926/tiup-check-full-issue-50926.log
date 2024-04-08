@@ -1,0 +1,55 @@
+
+mysqld is alive
+Server started.
+-----------------Regression Test Result on v7.3.0-----------------
+Validation passed.v7.3.0 is a good label
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.3.0
+Edition: Community
+Git Commit Hash: 40b72e7a9a4fc9670d4c5d974dd503a3c6097471
+Git Branch: heads/refs/tags/v7.3.0
+UTC Build Time: 2023-08-08 09:27:28
+GoVersion: go1.20.7
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.3.0-----------------
+mysqld is alive
+Server started.
+-----------------Regression Test Result on v7.4.0-----------------
+Validation failed.v7.4.0 is a bad label.Expected: . Actual: ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------Test Case-----------------
+mysql -h 127.0.0.1 -P 4000 -u root -D test --local-infile=true < issue50926_testcase.sql
+issue50926_testcase.sql: 
+drop table if exists t;
+create table t (a int);
+create or replace algorithm=undefined view v (a,b) AS select 1 as a, json_object('k', '0') as b from t;
+select sum(json_extract(b, '$.path')) from v group by a;
+-----------------Test Result-----------------
+Result : 
+ERROR 1105 (HY000) at line 4: Can't find column Column#4 in schema Column: [test.t._tidb_rowid] Unique key: []
+-----------------TiDB Version-----------------
+tidb_version()
+Release Version: v7.4.0
+Edition: Community
+Git Commit Hash: 38cb4f3312be9199a983c0ef282d2ea2e28a7824
+Git Branch: heads/refs/tags/v7.4.0
+UTC Build Time: 2023-10-10 14:10:02
+GoVersion: go1.21.0
+Race Enabled: false
+Check Table Before Drop: false
+Store: tikv
+
+-----------------End of regression test on v7.4.0-----------------
