@@ -33,8 +33,8 @@ A tool to identify regression issues in TiDB repo. It is a automation framework 
 - cd regression_detection
 - ./createtest.sh issue 52217
 - Edit testcase/${source}${issue}_testcase.sql, please make sure a drop table command is added at the very beginning of a testcase.
-> Please refer to issue52217_testcase.sql for reference.
-- Fill in testcase/${source}${issue}.result. Bring up an release which could provide the expected results, say v7.5.0 for 52217. Sometimes it is hard to tell which is the right release to bring up. We could refer to the result by mysql8 instead.
+> Please refer to [issue52217_testcase.sql](https://github.com/kennedy8312/regression_detection/blob/main/testcase/issue52217/issue52217_testcase.sql) for reference.
+- Fill in testcase/${source}${issue}.result. [Example-issue52217.result](https://github.com/kennedy8312/regression_detection/blob/main/testcase/issue52217/issue52217.result). Bring up an release which could provide the expected results, say v7.5.0 for 52217. Sometimes it is hard to tell which is the right release to bring up. We could refer to the result by mysql8 instead.
 
 ## Release detection
 - We need to identify the behavior of the testcase among releases and find out when the regression start to happen.
